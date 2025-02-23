@@ -5,11 +5,17 @@ import (
 	"strings"
 )
 
-func MyNameIsHandler(input string, prompt *string) (utils.HandlerState, string, error) {
+type MyNameIsState struct {
+	Output string
+}
+
+func (m *MyNameIsState) Handler(input string, prompt *string) (output string, err error) {
 	name := strings.TrimSpace(strings.TrimPrefix(input, "mynameis "))
-	if name != "" {
+	if name == "" {
+		err = utils.ErrInvalidUsername
+	} else {
 		*prompt = name + "$ "
-		return utils.StateMyNameIs, "", nil
+		m.Output = "login succeed"
 	}
-	return utils.StateMyNameIs, "", utils.ErrInvalidUsername
+	return m.Output, err
 }

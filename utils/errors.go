@@ -12,4 +12,5 @@ var (
 	ErrInvalidUsername     = errors.New("invalid username")
 	ErrInvalidPassword     = errors.New("invalid password")
 	ErrInvalidExitCode     = errors.New("invalid exit code")
+	ErrAlreadyLoggedOut    = errors.New("already logged out")
 )

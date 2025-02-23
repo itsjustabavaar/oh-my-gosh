@@ -17,7 +17,7 @@ func main() {
 			break
 		}
 		input := scanner.Text()
-		_, output, err := handler.HandleInput(input, &prompt)
+		_, output, err := handler.InputHandler(input, &prompt)
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
