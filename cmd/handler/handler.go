@@ -10,7 +10,7 @@ import (
 func InputHandler(input string) (string, *int, error) {
 	var state utils.State
 	switch {
-	case strings.HasPrefix(input, "mynameis "):
+	case strings.HasPrefix(input, "mynameis"):
 		state = &auth.MyNameIsState{}
 	case strings.HasPrefix(input, "logout"):
 		state = &auth.LogOutState{}
@@ -20,6 +20,8 @@ func InputHandler(input string) (string, *int, error) {
 		state = &basiccommands.ExitState{}
 	case strings.HasPrefix(input, "echo"):
 		state = &basiccommands.EchoState{}
+	case strings.HasPrefix(input, "pwd"):
+		state = &basiccommands.PwdState{}
 	default:
 		return input, nil, nil
 	}
