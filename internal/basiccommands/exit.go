@@ -8,14 +8,15 @@ import (
 	"strings"
 )
 
-type ExitState struct {
+type ExitCommand struct {
+	Input  string
 	Output string
 }
 
-func (e *ExitState) Handler(input string) (string, *int, error) {
+func (e *ExitCommand) Handler() (string, *int, error) {
 	var err error
 	var code *int = nil
-	components := strings.Split(input, " ")
+	components := strings.Split(e.Input, " ")
 	if len(components) > 2 {
 		err = utils.ErrTooManyArguments
 	} else if len(components) == 1 {

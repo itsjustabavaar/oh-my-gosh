@@ -1,5 +1,5 @@
 package utils
 
-type State interface {
-	Handler(input string) (string, *int, error)
+type Command interface {
+	Handler() (string, *int, error)
 }

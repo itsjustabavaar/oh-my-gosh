@@ -4,6 +4,7 @@ import "errors"
 
 var (
 	ErrUserNotFound        = errors.New("user not found")
+	ErrUserAlreadyExists   = errors.New("user already exists")
 	ErrDuplicateUser       = errors.New("duplicate user exists with this username")
 	ErrCommandNotFound     = errors.New("command not found")
 	ErrTooManyArguments    = errors.New("too many arguments")
@@ -14,4 +15,5 @@ var (
 	ErrInvalidExitCode     = errors.New("invalid exit code")
 	ErrAlreadyLoggedOut    = errors.New("already logged out")
 	ErrNotEnoughArguments  = errors.New("not enough arguments")
+	ErrReadingPassword     = errors.New("error reading password")
 )

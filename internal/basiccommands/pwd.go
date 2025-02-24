@@ -1,22 +1,15 @@
 package basiccommands
 
 import (
-	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"os"
-	"strings"
 )
 
-type PwdState struct {
+type PwdCommand struct {
 	Output string
 }
 
-func (p *PwdState) Handler(input string) (string, *int, error) {
+func (p *PwdCommand) Handler() (string, *int, error) {
 	var err error
-	components := strings.Split(input, " ")
-	if len(components) > 1 {
-		err = utils.ErrTooManyArguments
-	} else {
-		p.Output, err = os.Getwd()
-	}
+	p.Output, err = os.Getwd()
 	return p.Output, nil, err
 }

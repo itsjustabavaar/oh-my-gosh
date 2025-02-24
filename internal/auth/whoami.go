@@ -1,21 +1,16 @@
 package auth
 
 import (
-	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"strings"
 )
 
-type WhoAmIState struct {
+type WhoAmICommand struct {
 	Output string
 }
 
-func (w *WhoAmIState) Handler(input string) (string, *int, error) {
+func (w *WhoAmICommand) Handler() (string, *int, error) {
 	var err error
-	components := strings.Split(input, " ")
-	if len(components) > 1 {
-		err = utils.ErrTooManyArguments
-	}
 	if vars.Prompt != "$ " {
 		w.Output = strings.TrimSuffix(vars.Prompt, "$ ")
 	} else {

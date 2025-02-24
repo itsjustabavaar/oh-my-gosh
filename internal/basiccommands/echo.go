@@ -5,13 +5,14 @@ import (
 	"strings"
 )
 
-type EchoState struct {
+type EchoCommand struct {
+	Input  string
 	Output string
 }
 
-func (e *EchoState) Handler(input string) (string, *int, error) {
+func (e *EchoCommand) Handler() (string, *int, error) {
 	var err error
-	echoArgument := strings.TrimPrefix(input, "echo ")
+	echoArgument := strings.TrimPrefix(e.Input, "echo ")
 	if strings.HasPrefix(echoArgument, "'") && strings.HasSuffix(echoArgument, "'") {
 		return strings.Trim(echoArgument, "'"), nil, err
 	} else {

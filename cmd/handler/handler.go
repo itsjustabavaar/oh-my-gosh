@@ -8,22 +8,22 @@ import (
 )
 
 func InputHandler(input string) (string, *int, error) {
-	var state utils.State
+	var state utils.Command
 	switch {
-	case strings.HasPrefix(input, "mynameis"):
-		state = &auth.MyNameIsState{}
+	case strings.HasPrefix(input, "login"):
+		state = &auth.LoginCommand{Input: input}
 	case strings.HasPrefix(input, "logout"):
-		state = &auth.LogOutState{}
+		state = &auth.LogOutCommand{}
 	case strings.HasPrefix(input, "whoami"):
-		state = &auth.WhoAmIState{}
+		state = &auth.WhoAmICommand{}
 	case strings.HasPrefix(input, "exit"):
-		state = &basiccommands.ExitState{}
+		state = &basiccommands.ExitCommand{Input: input}
 	case strings.HasPrefix(input, "echo"):
-		state = &basiccommands.EchoState{}
+		state = &basiccommands.EchoCommand{Input: input}
 	case strings.HasPrefix(input, "pwd"):
-		state = &basiccommands.PwdState{}
+		state = &basiccommands.PwdCommand{}
 	default:
 		return input, nil, nil
 	}
-	return state.Handler(input)
+	return state.Handler()
 }
