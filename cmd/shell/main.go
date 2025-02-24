@@ -4,25 +4,28 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 )
 
 func main() {
-	prompt := "$ "
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
-		fmt.Print(prompt)
+		fmt.Print(vars.Prompt)
 		if !scanner.Scan() {
 			break
 		}
 		input := scanner.Text()
-		_, output, err := handler.InputHandler(input, &prompt)
+		output, code, err := handler.InputHandler(input)
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
 		if output != "" {
 			fmt.Println(output)
+		}
+		if code != nil {
+			os.Exit(*code)
 		}
 	}
 }

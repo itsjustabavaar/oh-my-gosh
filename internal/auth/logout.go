@@ -2,6 +2,7 @@ package auth
 
 import (
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"strings"
 )
 
@@ -9,15 +10,16 @@ type LogOutState struct {
 	Output string
 }
 
-func (l *LogOutState) Handler(input string, prompt *string) (output string, err error) {
+func (l *LogOutState) Handler(input string) (string, *int, error) {
+	var err error
 	components := strings.Split(input, " ")
 	if len(components) > 1 {
 		err = utils.ErrTooManyArguments
 	}
-	if *prompt == "$ " {
+	if vars.Prompt == "$ " {
 		err = utils.ErrInvalidUsername
 	} else {
-		*prompt = "$ "
+		vars.Prompt = "$ "
 	}
-	return l.Output, err
+	return l.Output, nil, err
 }

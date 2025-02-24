@@ -7,17 +7,21 @@ import (
 	"strings"
 )
 
-func InputHandler(input string, prompt *string) (output string, err error) {
+func InputHandler(input string) (string, *int, error) {
 	var state utils.State
 	switch {
 	case strings.HasPrefix(input, "mynameis "):
 		state = &auth.MyNameIsState{}
-	case input == "whoami":
+	case strings.HasPrefix(input, "logout"):
+		state = &auth.LogOutState{}
+	case strings.HasPrefix(input, "whoami"):
 		state = &auth.WhoAmIState{}
-	case strings.HasPrefix(input, "exit "):
+	case strings.HasPrefix(input, "exit"):
 		state = &basiccommands.ExitState{}
+	case strings.HasPrefix(input, "echo"):
+		state = &basiccommands.EchoState{}
 	default:
-		return input, nil
+		return input, nil, nil
 	}
-	return state.Handler(input, prompt)
+	return state.Handler(input)
 }
