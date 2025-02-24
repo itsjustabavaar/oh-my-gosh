@@ -17,7 +17,7 @@ func (l *LogOutState) Handler(input string) (string, *int, error) {
 		err = utils.ErrTooManyArguments
 	}
 	if vars.Prompt == "$ " {
-		err = utils.ErrInvalidUsername
+		err = utils.ErrAlreadyLoggedOut
 	} else {
 		vars.Prompt = "$ "
 	}
