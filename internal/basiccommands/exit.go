@@ -14,24 +14,28 @@ type ExitCommand struct {
 }
 
 func (e *ExitCommand) Handler() (string, *int, error) {
-	var err error
-	var code *int = nil
+	var exitCode *int = nil
+
 	components := strings.Split(e.Input, " ")
 	if len(components) > 2 {
-		err = utils.ErrTooManyArguments
-	} else if len(components) == 1 {
-		exit := 0
-		code = &exit
+		return e.Output, nil, utils.ErrTooManyArguments
+	}
+
+	if len(components) == 1 {
+		code := 0
+		exitCode = &code
 	} else {
-		exit, convErr := strconv.Atoi(components[1])
-		if convErr != nil {
-			err = utils.ErrInvalidExitCode
+		code, err := strconv.Atoi(components[1])
+		if err != nil {
+			return e.Output, nil, utils.ErrInvalidExitCode
 		} else {
-			code = &exit
-			if vars.Prompt != "$ " {
-				e.Output = fmt.Sprintf("%s logged out", strings.TrimSuffix(vars.Prompt, "$ "))
-			}
+			exitCode = &code
 		}
 	}
-	return e.Output, code, err
+
+	if vars.CurrentUser.Username != "" {
+		e.Output = fmt.Sprintf("%s logged out", vars.CurrentUser.Username)
+	}
+
+	return e.Output, exitCode, nil
 }

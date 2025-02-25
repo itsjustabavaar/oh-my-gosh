@@ -9,7 +9,10 @@ import (
 
 func InputHandler(input string) (string, *int, error) {
 	var state utils.Command
+
 	switch {
+	case strings.HasPrefix(input, "adduser"):
+		state = &auth.AddUserCommand{Input: input}
 	case strings.HasPrefix(input, "login"):
 		state = &auth.LoginCommand{Input: input}
 	case strings.HasPrefix(input, "logout"):
@@ -22,8 +25,17 @@ func InputHandler(input string) (string, *int, error) {
 		state = &basiccommands.EchoCommand{Input: input}
 	case strings.HasPrefix(input, "pwd"):
 		state = &basiccommands.PwdCommand{}
+	case strings.HasPrefix(input, "cat"):
+		state = &basiccommands.CatCommand{Input: input}
+	case strings.HasPrefix(input, "cd"):
+		state = &basiccommands.CdCommand{Input: input}
+	case strings.HasPrefix(input, "~"):
+		state = &basiccommands.HomeCommand{}
+	case strings.HasPrefix(input, "gosh"):
+		state = &basiccommands.GoshCommand{}
 	default:
 		return input, nil, nil
 	}
+
 	return state.Handler()
 }

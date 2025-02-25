@@ -2,7 +2,6 @@ package auth
 
 import (
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
-	"strings"
 )
 
 type WhoAmICommand struct {
@@ -10,11 +9,11 @@ type WhoAmICommand struct {
 }
 
 func (w *WhoAmICommand) Handler() (string, *int, error) {
-	var err error
-	if vars.Prompt != "$ " {
-		w.Output = strings.TrimSuffix(vars.Prompt, "$ ")
+	if vars.CurrentUser.Username != "" {
+		w.Output = vars.CurrentUser.Username
 	} else {
 		w.Output = "Anonymous"
 	}
-	return w.Output, nil, err
+
+	return w.Output, nil, nil
 }

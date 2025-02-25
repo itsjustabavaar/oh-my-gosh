@@ -1,12 +1,10 @@
 package auth
 
 import (
-	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
-	"golang.org/x/term"
 	"strings"
-	"syscall"
 )
 
 type LoginCommand struct {
@@ -14,26 +12,29 @@ type LoginCommand struct {
 	Output string
 }
 
-func (m *LoginCommand) Handler() (string, *int, error) {
-	var err error
-	name := strings.TrimSpace(strings.TrimPrefix(m.Input, "login "))
-	if name == "" {
-		err = utils.ErrInvalidUsername
-	} else {
-		vars.Prompt = name + "$ "
-		m.Output = "login succeed"
+func (l *LoginCommand) Handler() (string, *int, error) {
+	components := utils.SplitInput(l.Input, " ")
+	if len(components) > 2 {
+		return l.Output, nil, utils.ErrTooManyArguments
 	}
-	return m.Output, nil, err
-}
 
-func PasswordReader() (string, error) {
-	var password string
-	fmt.Print("enter password: ")
-	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
-	if err != nil {
-		err = utils.ErrReadingPassword
-	} else {
-		password = string(bytePassword)
+	username := strings.TrimSpace(strings.TrimPrefix(l.Input, "login "))
+	if username == "" || l.Input == "login" {
+		return l.Output, nil, utils.ErrWhoYouAre
 	}
-	return password, err
+
+	password, err := utils.PasswordReader("enter password")
+	if err != nil {
+		return l.Output, nil, err
+	}
+
+	loginUser, err := user.Login(username, password)
+	if err != nil {
+		return l.Output, nil, err
+	}
+
+	vars.CurrentUser = loginUser
+	l.Output = "login succeed"
+
+	return l.Output, nil, err
 }

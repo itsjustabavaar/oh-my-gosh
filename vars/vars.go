@@ -1,10 +1,19 @@
 package vars
 
-var Prompt string = "$ "
+import (
+	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
+)
+
+var Prompt = "$"
 
 type History struct {
 	Timestamp uint
 	Count     uint
 }
 
-var AnonymousHistory map[string]History = make(map[string]History)
+var AnonymousHistory = make(map[string]History)
+
+var CurrentUser *user.User = &user.User{}
+var CurrentWorkingDirectory string
+
+var CatSep = "\n-----------------------------------------------------\n"

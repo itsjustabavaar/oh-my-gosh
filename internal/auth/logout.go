@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 )
@@ -10,12 +11,12 @@ type LogOutCommand struct {
 }
 
 func (l *LogOutCommand) Handler() (string, *int, error) {
-	var err error
-	if vars.Prompt == "$ " {
-		err = utils.ErrAlreadyLoggedOut
-	} else {
-		vars.Prompt = "$ "
-		l.Output = "logout succeed"
+	if vars.CurrentUser.Username == "" {
+		return l.Output, nil, utils.ErrAlreadyLoggedOut
 	}
-	return l.Output, nil, err
+
+	vars.CurrentUser = &user.User{}
+	l.Output = "logout succeed"
+
+	return l.Output, nil, nil
 }

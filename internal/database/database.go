@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 const (
-	PostgresHost     = "0.0.0.0"
+	PostgresHost     = "192.168.43.128"
 	PostgresPort     = "5432"
 	PostgresUser     = "myuser"
 	PostgresPassword = "mypassword"
@@ -17,8 +18,6 @@ const (
 var db *gorm.DB
 
 func init() {
-	//fmt.Println("========================================================================================================================")
-	//fmt.Println("connecting to database...")
 
 	dsn := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=disable",
 		PostgresHost,
@@ -27,16 +26,15 @@ func init() {
 		PostgresUser,
 		PostgresPassword)
 
-	session, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	session, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		err = fmt.Errorf("unable to connect to database: %w", err)
 		panic(err)
 	}
 
 	db = session
-
-	//fmt.Printf("connected to database: %s\n", dsn)
-	//fmt.Println("========================================================================================================================")
 }
 
 func GetDB() *gorm.DB {
