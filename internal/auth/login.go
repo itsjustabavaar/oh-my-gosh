@@ -29,7 +29,7 @@ func (m *LoginCommand) Handler() (string, *int, error) {
 func PasswordReader() (string, error) {
 	var password string
 	fmt.Print("enter password: ")
-	bytePassword, err := term.ReadPassword(syscall.Stdin)
+	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		err = utils.ErrReadingPassword
 	} else {
