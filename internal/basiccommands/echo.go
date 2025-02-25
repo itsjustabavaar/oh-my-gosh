@@ -14,7 +14,7 @@ func (e *EchoCommand) Handler() (string, *int, error) {
 	var err error
 	echoArgument := strings.TrimPrefix(e.Input, "echo ")
 	if strings.HasPrefix(echoArgument, "'") && strings.HasSuffix(echoArgument, "'") {
-		return strings.Trim(echoArgument, "'"), nil, err
+		return strings.ReplaceAll(echoArgument, "'", ""), nil, err
 	} else {
 		echoPhrases := strings.Split(echoArgument, " ")
 		for idx, phrase := range echoPhrases {
