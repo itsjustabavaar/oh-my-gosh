@@ -1,6 +1,6 @@
 module github.com/itsjustabavaar/oh-my-gosh
 
-go 1.23.6
+go 1.23.0
 
 require (
 	gorm.io/driver/postgres v1.5.11
