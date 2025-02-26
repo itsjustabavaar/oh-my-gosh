@@ -25,7 +25,7 @@ var (
 	ErrMissMatchPasswords  = errors.New("password does not match")
 	ErrUsernameNotEntered  = errors.New("username not entered")
 	ErrDirectoryNotExists  = errors.New("directory not exists")
-	ErrNotADirectory       = errors.New("not a directory")
 	ErrPermissionDenied    = errors.New("permission denied")
 	ErrChangingDirectory   = errors.New("error changing directory")
+	ErrNoPreviousPath      = errors.New("no previous path")
 )

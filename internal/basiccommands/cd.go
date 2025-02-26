@@ -35,14 +35,21 @@ func (c *CdCommand) Handler() (string, *int, error) {
 	}
 
 	destinationDirectory := components[1]
-	if strings.HasPrefix(destinationDirectory, "~") {
-		destinationDirectory = strings.ReplaceAll(destinationDirectory, "~", homeDirectory)
-	}
 
-	pathComponents := strings.Split(destinationDirectory, "/")
-	for _, component := range pathComponents {
-		if strings.Contains(component, ".") {
-			return "", nil, fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/"))
+	if destinationDirectory == "-" {
+		previousDirectory := os.Getenv("OLDPWD")
+		if previousDirectory == "" {
+			return "", nil, utils.ErrNoPreviousPath
+		}
+		destinationDirectory = previousDirectory
+	} else if strings.HasPrefix(destinationDirectory, "~") {
+		destinationDirectory = strings.ReplaceAll(destinationDirectory, "~", homeDirectory)
+	} else {
+		pathComponents := strings.Split(destinationDirectory, "/")
+		for _, component := range pathComponents {
+			if strings.Contains(component, ".") {
+				return "", nil, fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/"))
+			}
 		}
 	}
 
@@ -60,6 +67,16 @@ func (c *CdCommand) Handler() (string, *int, error) {
 				return "", nil, utils.ErrChangingDirectory
 			}
 		}
+	}
+
+	previousDirectory := *workingDirectory
+	if strings.HasPrefix(previousDirectory, "~") {
+		previousDirectory = strings.ReplaceAll(previousDirectory, "~", homeDirectory)
+	}
+
+	err = os.Setenv("OLDPWD", previousDirectory)
+	if err != nil {
+		return "", nil, err
 	}
 
 	*workingDirectory = destinationDirectory
