@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/auth"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/basiccommands"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/systemcommands"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"strings"
 )
 
@@ -40,8 +39,9 @@ func InputHandler(input string) {
 	case strings.HasPrefix(input, "type"):
 		command = &basiccommands.TypeCommand{Input: input}
 	default:
-		_, _ = fmt.Fprintln(vars.StandardOutput, input)
-		return
+		//_, _ = fmt.Fprintln(vars.StandardOutput, input)
+		command = &systemcommands.SystemCommand{Input: input}
+		//return
 	}
 
 	command.Handler()
