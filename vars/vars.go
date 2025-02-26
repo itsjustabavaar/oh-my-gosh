@@ -2,16 +2,17 @@ package vars
 
 import (
 	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
+	"time"
 )
 
 var Prompt = "$"
 
 type History struct {
-	Timestamp uint
-	Count     uint
+	Command   string
+	Timestamp time.Time
 }
 
-var AnonymousHistory = make(map[string]History)
+var AnonymousHistory = make([]History, 10)
 
 var CurrentUser = &models.User{}
 var CurrentWorkingDirectory string

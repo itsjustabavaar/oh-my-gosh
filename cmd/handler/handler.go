@@ -33,6 +33,9 @@ func InputHandler(input string) (string, *int, error) {
 		state = &basiccommands.HomeCommand{}
 	case strings.HasPrefix(input, "gosh"):
 		state = &basiccommands.GoshCommand{}
+	case strings.HasPrefix(input, "history"):
+		state = &basiccommands.HistoryCommand{}
+
 	default:
 		return input, nil, nil
 	}

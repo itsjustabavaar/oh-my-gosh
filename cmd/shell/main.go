@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/cmd/colors"
 	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/basiccommands"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/database"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"golang.org/x/term"
 	"os"
+	"strings"
 	"syscall"
 )
 
@@ -41,6 +43,13 @@ func main() {
 		}
 
 		input := scanner.Text()
+		if !strings.HasPrefix(input, "history") {
+			err = basiccommands.StoreCommandHistory(input)
+		}
+		if err != nil {
+			fmt.Println("Error:", colors.ErrorColor(err))
+		}
+
 		output, code, err := handler.InputHandler(input)
 		if err != nil {
 			fmt.Println("Error:", colors.ErrorColor(err))
