@@ -5,6 +5,7 @@ import (
 	"github.com/itsjustabavaar/oh-my-gosh/internal/basiccommands"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
+	"os"
 	"os/exec"
 )
 
@@ -19,6 +20,7 @@ func (s *SystemCommand) Handler() {
 	_, err := basiccommands.FindingType(command)
 	if err == nil {
 		cmd := exec.Command(command, arguments...)
+		cmd.Dir, _ = os.Getwd()
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			_, _ = fmt.Fprintln(vars.StandardError, err)

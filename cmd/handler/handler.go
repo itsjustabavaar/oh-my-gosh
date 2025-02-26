@@ -41,7 +41,6 @@ func InputHandler(input string) {
 	default:
 		//_, _ = fmt.Fprintln(vars.StandardOutput, input)
 		command = &systemcommands.SystemCommand{Input: input}
-		//return
 	}
 
 	command.Handler()
