@@ -6,7 +6,7 @@ import (
 	"github.com/itsjustabavaar/oh-my-gosh/cmd/colors"
 	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/database"
-	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"golang.org/x/term"
@@ -26,7 +26,7 @@ func main() {
 
 	utils.HandleInterrupt(oldState)
 
-	err = user.MigrateDB(database.GetDB())
+	err = models.MigrateDB(database.GetDB())
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

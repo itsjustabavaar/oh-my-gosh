@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 )
@@ -15,7 +15,7 @@ func (l *LogOutCommand) Handler() (string, *int, error) {
 		return l.Output, nil, utils.ErrAlreadyLoggedOut
 	}
 
-	vars.CurrentUser = &user.User{}
+	vars.CurrentUser = &models.User{}
 	l.Output = "logout succeed"
 
 	return l.Output, nil, nil

@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/itsjustabavaar/oh-my-gosh/internal/database"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -23,7 +24,7 @@ func VerifyPassword(inputPassword, hashedPassword string) bool {
 }
 
 func AddUser(username, password string) error {
-	var existingUser User
+	var existingUser models.User
 
 	if err := database.GetDB().Where("username = ?", username).First(&existingUser).Error; err == nil {
 		return utils.ErrUserAlreadyExists
@@ -34,7 +35,7 @@ func AddUser(username, password string) error {
 		return err
 	}
 
-	user := &User{
+	user := &models.User{
 		Username:  username,
 		Password:  hashedPassword,
 		LastLogin: time.Now(),
@@ -47,8 +48,8 @@ func AddUser(username, password string) error {
 	return nil
 }
 
-func Login(username, password string) (*User, error) {
-	var user User
+func Login(username, password string) (*models.User, error) {
+	var user models.User
 
 	if err := database.GetDB().Where("username = ?", username).First(&user).Error; err != nil {
 		return nil, utils.ErrUserNotFound
