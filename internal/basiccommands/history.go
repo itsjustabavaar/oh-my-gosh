@@ -148,16 +148,18 @@ func FormatCommandSummaryTable(summaries []CommandSummary) string {
 		}
 	}
 
-	var builder strings.Builder
+	var historyLines []string
 
 	for _, summary := range summaries {
+		var builder strings.Builder
 		padding := commandMaxLength - len(summary.Command)
 		builder.WriteString("| ")
 		builder.WriteString(summary.Command)
 		builder.WriteString(strings.Repeat(" ", padding))
 		builder.WriteString(" | ")
 		builder.WriteString(fmt.Sprintf("%d", summary.Count))
+		builder.WriteString(" | ")
+		historyLines = append(historyLines, builder.String())
 	}
-
-	return builder.String()
+	return strings.Join(historyLines, "\n")
 }
