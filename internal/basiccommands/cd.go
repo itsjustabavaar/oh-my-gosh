@@ -91,5 +91,5 @@ func (c *CdCommand) Handler() {
 
 	*workingDirectory = destinationDirectory
 
-	_, _ = fmt.Fprintln(vars.StandardOutput, c.Output)
+	_, _ = fmt.Fprint(vars.StandardOutput, c.Output)
 }
