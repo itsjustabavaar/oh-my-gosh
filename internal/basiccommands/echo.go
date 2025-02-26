@@ -42,21 +42,20 @@ func (e *EchoCommand) Handler() (string, *int, error) {
 func processDoubleQuotedStrings(input string) string {
 	innerContent := input[1 : len(input)-1]
 
-	result := ""
-	escaping := false
+	result, escaped := "", false
 
 	for i := 0; i < len(innerContent); i++ {
 		c := innerContent[i]
 
-		if escaping {
+		if escaped {
 			if c == '$' || c == '`' || c == '"' || c == '\\' || c == '\n' {
 				result += string(c)
 			} else {
 				result += "\\" + string(c)
 			}
-			escaping = false
+			escaped = false
 		} else if c == '\\' {
-			escaping = true
+			escaped = true
 		} else if c == '$' {
 			if i+1 < len(innerContent) {
 				varStart := i + 1
@@ -85,7 +84,7 @@ func processDoubleQuotedStrings(input string) string {
 		}
 	}
 
-	if escaping {
+	if escaped {
 		result += "\\"
 	}
 
