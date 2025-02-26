@@ -1,40 +1,48 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"strings"
 )
 
+const loginCommand = "login"
+
 type LoginCommand struct {
 	Input  string
 	Output string
 }
 
-func (l *LoginCommand) Handler() (string, *int, error) {
+func (l *LoginCommand) Handler() {
 	components := utils.SplitInput(l.Input, " ")
 	if len(components) > 2 {
-		return l.Output, nil, utils.ErrTooManyArguments
+		utils.Error(loginCommand, utils.ErrTooManyArguments)
+		return
 	}
 
 	username := strings.TrimSpace(strings.TrimPrefix(l.Input, "login "))
 	if username == "" || l.Input == "login" {
-		return l.Output, nil, utils.ErrWhoYouAre
+		utils.Error(loginCommand, utils.ErrWhoYouAre)
+		return
 	}
 
 	password, err := utils.PasswordReader("enter password")
 	if err != nil {
-		return l.Output, nil, err
+		utils.Error(loginCommand, err)
+		return
 	}
 
 	loginUser, err := user.Login(username, password)
 	if err != nil {
-		return l.Output, nil, err
+		utils.Error(loginCommand, err)
+		return
 	}
 
 	vars.CurrentUser = loginUser
+
 	l.Output = "login succeed"
 
-	return l.Output, nil, err
+	_, _ = fmt.Fprintln(vars.StandardOutput, l.Output)
 }

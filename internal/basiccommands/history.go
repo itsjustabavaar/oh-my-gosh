@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/database"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
+	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"sort"
 	"strings"
 	"time"
 )
+
+const historyCommand = "historyCommand"
 
 type HistoryCommand struct {
 	Output string
@@ -20,23 +23,25 @@ type CommandSummary struct {
 	LatestUsed time.Time
 }
 
-func (h *HistoryCommand) Handler() (string, *int, error) {
+func (h *HistoryCommand) Handler() {
 	commandsSummary := make([]CommandSummary, 0)
 	var err error
 
 	if vars.CurrentUser.Username == "" {
 		commandsSummary, err = GetAnonymousCommandsSummary()
 		if err != nil {
-			return "", nil, err
+			utils.Error(historyCommand, err)
+			return
 		}
 	} else {
 		commandsSummary, err = GetUserCommandsSummary()
 		if err != nil {
-			return "", nil, err
+			utils.Error(historyCommand, err)
+			return
 		}
 	}
 	result := FormatCommandSummaryTable(commandsSummary)
-	return result, nil, nil
+	_, _ = fmt.Fprintln(vars.StandardOutput, result)
 }
 
 func AddUserHistory(user *models.User, command string) error {

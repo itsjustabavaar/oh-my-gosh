@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"golang.org/x/term"
 	"os"
 	"os/signal"
@@ -10,7 +11,19 @@ import (
 )
 
 func SplitInput(input string, separationMethod string) []string {
-	return strings.Split(input, separationMethod)
+	parsedComponents := make([]string, 0)
+	components := strings.Split(input, separationMethod)
+	for _, component := range components {
+		if component != "" {
+			parsedComponents = append(parsedComponents, component)
+		}
+	}
+	return parsedComponents
+}
+
+func Error(commandName string, err error) {
+	err = fmt.Errorf("-gosh: %s: %w", commandName, err)
+	_, _ = fmt.Fprintln(vars.StandardError, err)
 }
 
 func PasswordReader(prompt string) (string, error) {

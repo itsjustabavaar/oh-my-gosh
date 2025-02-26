@@ -47,20 +47,11 @@ func main() {
 			err = basiccommands.StoreCommandHistory(input)
 		}
 		if err != nil {
-			fmt.Println("Error:", colors.ErrorColor(err))
+			_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
+			os.Exit(1)
 		}
 
-		output, code, err := handler.InputHandler(input)
-		if err != nil {
-			fmt.Println("Error:", colors.ErrorColor(err))
-		}
+		handler.InputHandler(input)
 
-		if output != "" {
-			fmt.Println(output)
-		}
-
-		if code != nil {
-			os.Exit(*code)
-		}
 	}
 }

@@ -5,10 +5,10 @@ import "errors"
 var (
 	ErrUserNotFound        = errors.New("user not found")
 	ErrUserAlreadyExists   = errors.New("user already exists")
-	ErrDuplicateUser       = errors.New("duplicate user exists with this username")
 	ErrCommandNotFound     = errors.New("command not found")
 	ErrTooManyArguments    = errors.New("too many arguments")
-	ErrUnknownType         = errors.New("unknown type")
+	ErrNotEnoughArguments  = errors.New("not enough arguments")
+	ErrUnknownOsType       = errors.New("unknown operating system type")
 	ErrEmptyCommandHistory = errors.New("empty command history")
 	ErrInvalidUsername     = errors.New("invalid username")
 	ErrInvalidPassword     = errors.New("invalid password")

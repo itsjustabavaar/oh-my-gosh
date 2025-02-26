@@ -1,45 +1,55 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 )
+
+const addUserCommand = "adduser"
 
 type AddUserCommand struct {
 	Input  string
 	Output string
 }
 
-func (a *AddUserCommand) Handler() (string, *int, error) {
+func (a *AddUserCommand) Handler() {
 	components := utils.SplitInput(a.Input, " ")
 	if len(components) == 1 {
-		return a.Output, nil, utils.ErrUsernameNotEntered
+		utils.Error(addUserCommand, utils.ErrUsernameNotEntered)
+		return
 	}
-	if len(components) != 2 {
-		return a.Output, nil, utils.ErrInvalidArguments
+	if len(components) > 2 {
+		utils.Error(addUserCommand, utils.ErrTooManyArguments)
+		return
 	}
 
 	username := components[1]
 
 	password, err := utils.PasswordReader("enter password")
 	if err != nil {
-		return a.Output, nil, err
+		utils.Error(addUserCommand, err)
+		return
 	}
 
 	passwordAgain, err := utils.PasswordReader("enter password again")
 	if err != nil {
-		return a.Output, nil, err
+		utils.Error(addUserCommand, err)
+		return
 	}
 
 	if password != passwordAgain {
-		return a.Output, nil, utils.ErrMissMatchPasswords
+		utils.Error(addUserCommand, utils.ErrMissMatchPasswords)
+		return
 	}
 
 	err = user.AddUser(username, password)
 	if err != nil {
-		return a.Output, nil, err
+		utils.Error(addUserCommand, err)
+		return
 	}
 
-	a.Output = "user created successfully"
-	return a.Output, nil, nil
+	a.Output = fmt.Sprintf("user %s create successfully", username)
+	_, _ = fmt.Fprintln(vars.StandardOutput, a.Output)
 }

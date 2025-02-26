@@ -1,6 +1,8 @@
 package basiccommands
 
 import (
+	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 	"strings"
 )
@@ -10,13 +12,13 @@ type EchoCommand struct {
 	Output string
 }
 
-func (e *EchoCommand) Handler() (string, *int, error) {
+func (e *EchoCommand) Handler() {
 	echoArgument := strings.TrimPrefix(e.Input, "echo ")
 	if strings.HasPrefix(echoArgument, "'") && strings.HasSuffix(echoArgument, "'") {
-		return strings.ReplaceAll(echoArgument, "'", ""), nil, nil
+		_, _ = fmt.Fprintln(vars.StandardOutput, strings.ReplaceAll(echoArgument, "'", ""))
 	}
 	if strings.HasPrefix(echoArgument, "\"") && strings.HasSuffix(echoArgument, "\"") {
-		return processDoubleQuotedStrings(echoArgument), nil, nil
+		_, _ = fmt.Fprintln(vars.StandardOutput, processDoubleQuotedStrings(echoArgument))
 	}
 
 	echoPhrases := strings.Split(echoArgument, " ")
@@ -36,7 +38,7 @@ func (e *EchoCommand) Handler() (string, *int, error) {
 		echoPhrases[idx] = phrase
 	}
 
-	return strings.Join(echoPhrases, " "), nil, nil
+	_, _ = fmt.Fprintln(vars.StandardOutput, strings.Join(echoPhrases, " "))
 }
 
 func processDoubleQuotedStrings(input string) string {

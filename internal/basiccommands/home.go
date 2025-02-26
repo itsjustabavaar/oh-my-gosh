@@ -2,20 +2,23 @@ package basiccommands
 
 import (
 	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/utils"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 )
+
+const homeCommand = "homeCommand"
 
 type HomeCommand struct {
 	Output string
 }
 
-func (h *HomeCommand) Handler() (string, *int, error) {
+func (h *HomeCommand) Handler() {
 	homeDirectory, err := os.UserHomeDir()
 	if err != nil {
-		return "", nil, err
+		utils.Error(homeCommand, err)
+		return
 	}
 
-	h.Output = fmt.Sprintf("-gosh: %s: is a directory, it's your home :)", homeDirectory)
-
-	return h.Output, nil, nil
+	_, _ = fmt.Fprintf(vars.StandardOutput, "-gosh: %s: is a directory, it's your homeCommand :)\n", homeDirectory)
 }

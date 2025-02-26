@@ -10,27 +10,32 @@ import (
 	"syscall"
 )
 
+const cdCommand = "cd"
+
 type CdCommand struct {
 	Input  string
 	Output string
 }
 
-func (c *CdCommand) Handler() (string, *int, error) {
+func (c *CdCommand) Handler() {
 	homeDirectory, err := os.UserHomeDir()
 	workingDirectory := &vars.CurrentWorkingDirectory
 	if err != nil {
-		return "", nil, err
+		utils.Error(cdCommand, err)
+		return
 	}
 
 	components := utils.SplitInput(c.Input, " ")
 	if len(components) > 2 {
-		return "", nil, utils.ErrTooManyArguments
+		utils.Error(cdCommand, utils.ErrTooManyArguments)
+		return
 	}
 
 	if len(components) == 1 {
 		err = os.Chdir(homeDirectory)
 		if err != nil {
-			return "", nil, err
+			utils.Error(cdCommand, err)
+			return
 		}
 	}
 
@@ -39,7 +44,7 @@ func (c *CdCommand) Handler() (string, *int, error) {
 	if destinationDirectory == "-" {
 		previousDirectory := os.Getenv("OLDPWD")
 		if previousDirectory == "" {
-			return "", nil, utils.ErrNoPreviousPath
+			previousDirectory = *workingDirectory
 		}
 		destinationDirectory = previousDirectory
 	} else if strings.HasPrefix(destinationDirectory, "~") {
@@ -48,7 +53,8 @@ func (c *CdCommand) Handler() (string, *int, error) {
 		pathComponents := strings.Split(destinationDirectory, "/")
 		for _, component := range pathComponents {
 			if strings.Contains(component, ".") {
-				return "", nil, fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/"))
+				utils.Error(cdCommand, fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/")))
+				return
 			}
 		}
 	}
@@ -60,11 +66,14 @@ func (c *CdCommand) Handler() (string, *int, error) {
 		if errors.As(err, &pathErr) {
 			switch {
 			case errors.Is(pathErr.Err, syscall.ENOENT):
-				return "", nil, utils.ErrDirectoryNotExists
+				utils.Error(cdCommand, utils.ErrDirectoryNotExists)
+				return
 			case errors.Is(pathErr.Err, syscall.EACCES):
-				return "", nil, utils.ErrPermissionDenied
+				utils.Error(cdCommand, utils.ErrPermissionDenied)
+				return
 			default:
-				return "", nil, utils.ErrChangingDirectory
+				utils.Error(cdCommand, utils.ErrChangingDirectory)
+				return
 			}
 		}
 	}
@@ -76,10 +85,11 @@ func (c *CdCommand) Handler() (string, *int, error) {
 
 	err = os.Setenv("OLDPWD", previousDirectory)
 	if err != nil {
-		return "", nil, err
+		utils.Error(cdCommand, err)
+		return
 	}
 
 	*workingDirectory = destinationDirectory
 
-	return "", nil, nil
+	_, _ = fmt.Fprintln(vars.StandardOutput, c.Output)
 }

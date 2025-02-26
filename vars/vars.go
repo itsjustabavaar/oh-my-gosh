@@ -2,8 +2,13 @@ package vars
 
 import (
 	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
+	"io"
+	"os"
 	"time"
 )
+
+var StandardOutput io.Writer = os.Stdout
+var StandardError io.Writer = os.Stderr
 
 var Prompt = "$"
 
@@ -17,4 +22,17 @@ var AnonymousHistory = make([]History, 10)
 var CurrentUser = &models.User{}
 var CurrentWorkingDirectory string
 
-var CatSep = "\n-----------------------------------------------------\n"
+var GoshBuiltins = map[string]struct{}{
+	"gosh":    {},
+	"cat":     {},
+	"cd":      {},
+	"login":   {},
+	"history": {},
+	"logout":  {},
+	"whoami":  {},
+	"adduser": {},
+	"echo":    {},
+	"exit":    {},
+	"pwd":     {},
+	"type":    {},
+}

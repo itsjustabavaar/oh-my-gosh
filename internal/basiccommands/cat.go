@@ -2,36 +2,35 @@ package basiccommands
 
 import (
 	"fmt"
-	"github.com/itsjustabavaar/oh-my-gosh/cmd/colors"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"io"
 	"os"
-	"strings"
 )
+
+const catCommand = "cat"
 
 type CatCommand struct {
 	Input  string
 	Output string
 }
 
-func (c *CatCommand) Handler() (string, *int, error) {
-	catResult := make([]string, 0)
-
-	components := strings.Split(c.Input, " ")
+func (c *CatCommand) Handler() {
+	components := utils.SplitInput(c.Input, " ")
 	if len(components) == 1 {
-		return c.Output, nil, utils.ErrNoFileProvided
+		utils.Error(catCommand, utils.ErrUsernameNotEntered)
+		return
 	}
 
 	for i := 1; i < len(components); i++ {
 		fileContent, catErr := catFile(components[i])
 		if catErr != nil {
-			catResult = append(catResult, fmt.Sprintf("Error: cat: %s: %s", components[i], colors.ErrorColor(catErr)))
+			utils.Error(catCommand, fmt.Errorf("%s: %s", components[i], catErr))
+			return
 		} else {
-			catResult = append(catResult, fmt.Sprintf("%s", fileContent))
+			_, _ = fmt.Fprintln(vars.StandardOutput, fileContent)
 		}
 	}
-	return strings.Join(catResult, vars.CatSep), nil, nil
 }
 
 func catFile(filename string) (string, error) {

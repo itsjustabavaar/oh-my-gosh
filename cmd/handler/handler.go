@@ -1,44 +1,48 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/auth"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/basiccommands"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"strings"
 )
 
-func InputHandler(input string) (string, *int, error) {
-	var state utils.Command
+func InputHandler(input string) {
+	var command utils.Command
 
 	switch {
 	case strings.HasPrefix(input, "adduser"):
-		state = &auth.AddUserCommand{Input: input}
+		command = &auth.AddUserCommand{Input: input}
 	case strings.HasPrefix(input, "login"):
-		state = &auth.LoginCommand{Input: input}
+		command = &auth.LoginCommand{Input: input}
 	case strings.HasPrefix(input, "logout"):
-		state = &auth.LogOutCommand{}
+		command = &auth.LogOutCommand{}
 	case strings.HasPrefix(input, "whoami"):
-		state = &auth.WhoAmICommand{}
+		command = &auth.WhoAmICommand{}
 	case strings.HasPrefix(input, "exit"):
-		state = &basiccommands.ExitCommand{Input: input}
+		command = &basiccommands.ExitCommand{Input: input}
 	case strings.HasPrefix(input, "echo"):
-		state = &basiccommands.EchoCommand{Input: input}
+		command = &basiccommands.EchoCommand{Input: input}
 	case strings.HasPrefix(input, "pwd"):
-		state = &basiccommands.PwdCommand{}
+		command = &basiccommands.PwdCommand{}
 	case strings.HasPrefix(input, "cat"):
-		state = &basiccommands.CatCommand{Input: input}
+		command = &basiccommands.CatCommand{Input: input}
 	case strings.HasPrefix(input, "cd"):
-		state = &basiccommands.CdCommand{Input: input}
+		command = &basiccommands.CdCommand{Input: input}
 	case strings.HasPrefix(input, "~"):
-		state = &basiccommands.HomeCommand{}
+		command = &basiccommands.HomeCommand{}
 	case strings.HasPrefix(input, "gosh"):
-		state = &basiccommands.GoshCommand{}
+		command = &basiccommands.GoshCommand{}
 	case strings.HasPrefix(input, "history"):
-		state = &basiccommands.HistoryCommand{}
-
+		command = &basiccommands.HistoryCommand{}
+	case strings.HasPrefix(input, "type"):
+		command = &basiccommands.TypeCommand{Input: input}
 	default:
-		return input, nil, nil
+		_, _ = fmt.Fprintln(vars.StandardOutput, input)
+		return
 	}
 
-	return state.Handler()
+	command.Handler()
 }
