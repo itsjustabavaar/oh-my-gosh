@@ -28,9 +28,19 @@ func (t *TypeCommand) Handler() {
 		return
 	}
 	desiredType := components[1]
-	if _, ok := vars.GoshBuiltins[desiredType]; ok {
-		_, _ = fmt.Fprintf(vars.StandardOutput, "%s is a gosh builtin\n", desiredType)
+	result, err := FindingType(desiredType)
+	if err != nil {
+		utils.Error(typeCommand, err)
 		return
+	}
+	_, _ = fmt.Fprintln(os.Stdout, result)
+
+}
+
+func FindingType(inputType string) (string, error) {
+	desiredType := inputType
+	if _, ok := vars.GoshBuiltins[desiredType]; ok {
+		return fmt.Sprintf("%s is a gosh builtin", desiredType), nil
 	}
 
 	pathEnv := os.Getenv("PATH")
@@ -43,22 +53,18 @@ func (t *TypeCommand) Handler() {
 	case "linux":
 		pathEnvComponents = strings.Split(pathEnv, ":")
 	default:
-		utils.Error(typeCommand, utils.ErrUnknownOsType)
-		return
+		return "", utils.ErrUnknownOsType
 	}
 	for _, path := range pathEnvComponents {
 		ok, err := CheckFileExistence(desiredType, path)
 		if err != nil {
-			utils.Error(typeCommand, err)
-			return
+			return "", err
 		}
 		if ok {
-			_, _ = fmt.Fprintf(vars.StandardOutput, "%s is %s\n", components[1], filepath.Join(path, desiredType))
-			return
+			return fmt.Sprintf("%s is %s", inputType, filepath.Join(path, desiredType)), nil
 		}
 	}
-	utils.Error(typeCommand, fmt.Errorf("%s: %w", components[1], utils.ErrCommandNotFound))
-	return
+	return "", fmt.Errorf("%s: %w", inputType, utils.ErrCommandNotFound)
 }
 
 func CheckFileExistence(filename, directory string) (bool, error) {
