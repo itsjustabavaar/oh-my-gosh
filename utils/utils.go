@@ -42,9 +42,13 @@ func ClearScreen() error {
 	return nil
 }
 
-func Error(commandName string, err error) {
+func PrintError(commandName string, err error) {
 	err = fmt.Errorf("-gosh: %s: %w", commandName, err)
 	_, _ = fmt.Fprintln(vars.StandardError, err)
+}
+
+func PrintOutput(output string) {
+	_, _ = fmt.Fprintln(vars.StandardOutput, output)
 }
 
 func PasswordReader(prompt string) (string, error) {
@@ -64,7 +68,13 @@ func PasswordReader(prompt string) (string, error) {
 	return password, err
 }
 
-func HandleInterrupt(originalState *term.State) {
+func HandleInterrupt() {
+	originalState, err := term.GetState(int(syscall.Stdin))
+
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, "-gosh: failed to get terminal state: ", err)
+		os.Exit(1)
+	}
 	c := make(chan os.Signal, 1)
 
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)

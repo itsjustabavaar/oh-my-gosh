@@ -3,7 +3,6 @@ package basiccommands
 import (
 	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 )
 
@@ -16,9 +15,11 @@ type HomeCommand struct {
 func (h *HomeCommand) Handler() {
 	homeDirectory, err := os.UserHomeDir()
 	if err != nil {
-		utils.Error(homeCommand, err)
+		utils.PrintError(homeCommand, err)
 		return
 	}
 
-	_, _ = fmt.Fprintf(vars.StandardOutput, "-gosh: %s: is a directory, it's your homeCommand :)\n", homeDirectory)
+	h.Output = fmt.Sprintf("-gosh: %s: is a directory, it's your homeCommand :)\n", homeDirectory)
+
+	utils.PrintOutput(h.Output)
 }

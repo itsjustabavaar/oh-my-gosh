@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 )
 
@@ -10,11 +10,11 @@ type WhoAmICommand struct {
 }
 
 func (w *WhoAmICommand) Handler() {
+	w.Output = "Anonymous"
+
 	if vars.CurrentUser.Username != "" {
 		w.Output = vars.CurrentUser.Username
-	} else {
-		w.Output = "Anonymous"
 	}
 
-	_, _ = fmt.Fprintln(vars.StandardOutput, w.Output)
+	utils.PrintOutput(w.Output)
 }

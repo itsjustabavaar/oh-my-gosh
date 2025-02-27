@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
 )
 
 const addUserCommand = "adduser"
@@ -17,11 +16,11 @@ type AddUserCommand struct {
 func (a *AddUserCommand) Handler() {
 	components := utils.SplitInput(a.Input, " ")
 	if len(components) == 1 {
-		utils.Error(addUserCommand, utils.ErrUsernameNotEntered)
+		utils.PrintError(addUserCommand, utils.ErrUsernameNotEntered)
 		return
 	}
 	if len(components) > 2 {
-		utils.Error(addUserCommand, utils.ErrTooManyArguments)
+		utils.PrintError(addUserCommand, utils.ErrTooManyArguments)
 		return
 	}
 
@@ -29,27 +28,27 @@ func (a *AddUserCommand) Handler() {
 
 	password, err := utils.PasswordReader("enter password")
 	if err != nil {
-		utils.Error(addUserCommand, err)
+		utils.PrintError(addUserCommand, err)
 		return
 	}
 
 	passwordAgain, err := utils.PasswordReader("enter password again")
 	if err != nil {
-		utils.Error(addUserCommand, err)
+		utils.PrintError(addUserCommand, err)
 		return
 	}
 
 	if password != passwordAgain {
-		utils.Error(addUserCommand, utils.ErrMissMatchPasswords)
+		utils.PrintError(addUserCommand, utils.ErrMissMatchPasswords)
 		return
 	}
 
 	err = user.AddUser(username, password)
 	if err != nil {
-		utils.Error(addUserCommand, err)
+		utils.PrintError(addUserCommand, err)
 		return
 	}
 
-	a.Output = fmt.Sprintf("user %s create successfully", username)
-	_, _ = fmt.Fprintln(vars.StandardOutput, a.Output)
+	a.Output = fmt.Sprintf("user %s created successfully", username)
+	utils.PrintOutput(a.Output)
 }

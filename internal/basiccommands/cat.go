@@ -3,7 +3,6 @@ package basiccommands
 import (
 	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"io"
 	"os"
 )
@@ -17,18 +16,19 @@ type CatCommand struct {
 
 func (c *CatCommand) Handler() {
 	components := utils.SplitInput(c.Input, " ")
+
 	if len(components) == 1 {
-		utils.Error(catCommand, utils.ErrNotEnoughArguments)
+		utils.PrintError(catCommand, utils.ErrNotEnoughArguments)
 		return
 	}
 
 	for i := 1; i < len(components); i++ {
 		fileContent, catErr := catFile(components[i])
 		if catErr != nil {
-			utils.Error(catCommand, fmt.Errorf("%s: %s", components[i], catErr))
-		} else {
-			_, _ = fmt.Fprintln(vars.StandardOutput, fileContent)
+			utils.PrintError(catCommand, fmt.Errorf("%s: %s", components[i], catErr))
+			continue
 		}
+		utils.PrintOutput(fileContent)
 	}
 }
 
@@ -36,12 +36,13 @@ func catFile(filename string) (string, error) {
 	var fileOutput string
 
 	file, openErr := os.Open(filename)
+
 	if openErr != nil {
 		if os.IsNotExist(openErr) {
 			return fileOutput, utils.ErrFileNotFound
-		} else {
-			return fileOutput, utils.ErrFileOpening
 		}
+
+		return fileOutput, utils.ErrFileOpening
 	}
 
 	defer func(file *os.File) {

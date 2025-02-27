@@ -1,8 +1,7 @@
 package basiccommands
 
 import (
-	"fmt"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
+	"github.com/itsjustabavaar/oh-my-gosh/utils"
 )
 
 type GoshCommand struct {
@@ -11,5 +10,5 @@ type GoshCommand struct {
 
 func (g *GoshCommand) Handler() {
 	g.Output = "I'm Here! :)"
-	_, _ = fmt.Fprintln(vars.StandardOutput, g.Output)
+	utils.PrintOutput(g.Output)
 }

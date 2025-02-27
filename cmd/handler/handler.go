@@ -48,5 +48,5 @@ func InputHandler(input string) {
 
 	command.Handler()
 
-	redirections.RestoreStds(file)
+	redirections.RestoreStates(file)
 }

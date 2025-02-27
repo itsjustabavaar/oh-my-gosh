@@ -21,7 +21,7 @@ func (e *ExitCommand) Handler() {
 
 	components := strings.Split(e.Input, " ")
 	if len(components) > 2 {
-		utils.Error(exitCommand, utils.ErrTooManyArguments)
+		utils.PrintError(exitCommand, utils.ErrTooManyArguments)
 		return
 	}
 
@@ -31,14 +31,16 @@ func (e *ExitCommand) Handler() {
 	} else {
 		code, err := strconv.Atoi(components[1])
 		if err != nil {
-			utils.Error(exitCommand, utils.ErrInvalidExitCode)
+			utils.PrintError(exitCommand, utils.ErrInvalidExitCode)
 			return
 		}
+
 		exitCode = &code
 	}
 
 	if vars.CurrentUser.Username != "" {
-		_, _ = fmt.Fprintf(vars.StandardOutput, "%s logged out\n", vars.CurrentUser.Username)
+		e.Output = fmt.Sprintf("%s logged out\n", vars.CurrentUser.Username)
+		utils.PrintOutput(e.Output)
 	}
 
 	if exitCode != nil {

@@ -9,9 +9,11 @@ func MigrateDB(db *gorm.DB) error {
 	if err != nil {
 		return err
 	}
+
 	err = db.AutoMigrate(&CommandHistory{})
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

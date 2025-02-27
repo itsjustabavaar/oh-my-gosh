@@ -19,8 +19,10 @@ func DetectAndApplyRedirection(inputCommand *string) *os.File {
 			file, err := applyRedirection(possibleRedirection, possibleFilePath)
 			if err != nil {
 				_, _ = fmt.Fprintln(os.Stderr, err)
+
 				return nil
 			}
+
 			*inputCommand = strings.Join(inputComponents[:len(inputComponents)-2], " ")
 			return file
 
@@ -36,45 +38,59 @@ func applyRedirection(inputRedirection string, inputFilePath string) (*os.File, 
 	var err error
 
 	switch inputRedirection {
+
 	case ">", "1>":
 		file, err = openFileRedirection(inputFilePath, "override")
 		if err != nil {
 			return nil, err
 		}
+
 		vars.StandardOutput = file
+
 	case ">>", "1>>":
 		file, err = openFileRedirection(inputFilePath, "append")
 		if err != nil {
 			return nil, err
 		}
+
 		vars.StandardOutput = file
+
 	case "2>":
 		file, err = openFileRedirection(inputFilePath, "override")
 		if err != nil {
 			return nil, err
 		}
+
 		vars.StandardError = file
+
 	case "2>>":
 		file, err = openFileRedirection(inputFilePath, "append")
 		if err != nil {
 			return nil, err
 		}
+
 		vars.StandardError = file
+
 	case "&>":
 		file, err = openFileRedirection(inputFilePath, "override")
 		if err != nil {
 			return nil, err
 		}
+
 		vars.StandardOutput, vars.StandardError = file, file
+
 	case "&>>":
 		file, err = openFileRedirection(inputFilePath, "append")
 		if err != nil {
 			return nil, err
 		}
+
 		vars.StandardOutput, vars.StandardError = file, file
+
 	default:
 		return nil, utils.ErrUnknownRedirection
 	}
+
 	return file, nil
 }
 
@@ -84,15 +100,19 @@ func openFileRedirection(filepath string, openMode string) (*os.File, error) {
 		if err != nil {
 			return nil, utils.ErrFileOpening
 		}
+
 		return file, nil
 	}
+
 	if openMode == "append" {
 		file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
 			return nil, utils.ErrFileOpening
 		}
+
 		return file, nil
 	}
+
 	return nil, utils.ErrUnknownMode
 }
 
@@ -103,11 +123,13 @@ func CloseFile(file *os.File) {
 	}
 }
 
-func RestoreStds(file *os.File) {
+func RestoreStates(file *os.File) {
 	defer CloseFile(file)
+
 	if vars.StandardOutput != os.Stdout {
 		vars.StandardOutput = os.Stdout
 	}
+
 	if vars.StandardError != os.Stderr {
 		vars.StandardError = os.Stderr
 	}

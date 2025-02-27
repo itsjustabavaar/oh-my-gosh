@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
@@ -18,25 +17,25 @@ type LoginCommand struct {
 func (l *LoginCommand) Handler() {
 	components := utils.SplitInput(l.Input, " ")
 	if len(components) > 2 {
-		utils.Error(loginCommand, utils.ErrTooManyArguments)
+		utils.PrintError(loginCommand, utils.ErrTooManyArguments)
 		return
 	}
 
 	username := strings.TrimSpace(strings.TrimPrefix(l.Input, "login "))
 	if username == "" || l.Input == "login" {
-		utils.Error(loginCommand, utils.ErrWhoYouAre)
+		utils.PrintError(loginCommand, utils.ErrWhoYouAre)
 		return
 	}
 
 	password, err := utils.PasswordReader("enter password")
 	if err != nil {
-		utils.Error(loginCommand, err)
+		utils.PrintError(loginCommand, err)
 		return
 	}
 
 	loginUser, err := user.Login(username, password)
 	if err != nil {
-		utils.Error(loginCommand, err)
+		utils.PrintError(loginCommand, err)
 		return
 	}
 
@@ -44,5 +43,5 @@ func (l *LoginCommand) Handler() {
 
 	l.Output = "login succeed"
 
-	_, _ = fmt.Fprintln(vars.StandardOutput, l.Output)
+	utils.PrintOutput(l.Output)
 }

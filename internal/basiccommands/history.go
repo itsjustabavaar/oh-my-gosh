@@ -26,35 +26,37 @@ type CommandSummary struct {
 
 func (h *HistoryCommand) Handler() {
 	components := utils.SplitInput(h.Input, " ")
-	if len(components) > 1 {
-		if components[1] == "clean" {
-			cleaningErr := cleanHistory()
-			if cleaningErr != nil {
-				utils.Error(historyCommand, utils.ErrCleaningHistory)
-				return
-			}
-			_, _ = fmt.Fprint(vars.StandardOutput, h.Output)
+
+	if len(components) > 1 && components[1] == "clean" {
+		cleaningErr := cleanHistory()
+		if cleaningErr != nil {
+			utils.PrintError(historyCommand, utils.ErrCleaningHistory)
 			return
 		}
+		_, _ = fmt.Fprint(vars.StandardOutput, h.Output)
+		return
 	}
+
 	commandsSummary := make([]CommandSummary, 0)
 	var err error
 
 	if vars.CurrentUser.Username == "" {
 		commandsSummary, err = GetAnonymousCommandsSummary()
 		if err != nil {
-			utils.Error(historyCommand, err)
+			utils.PrintError(historyCommand, err)
 			return
 		}
 	} else {
 		commandsSummary, err = GetUserCommandsSummary()
 		if err != nil {
-			utils.Error(historyCommand, err)
+			utils.PrintError(historyCommand, err)
 			return
 		}
 	}
-	result := FormatCommandSummaryTable(commandsSummary)
-	_, _ = fmt.Fprintln(vars.StandardOutput, result)
+
+	h.Output = FormatCommandSummaryTable(commandsSummary)
+
+	utils.PrintOutput(h.Output)
 }
 
 func AddUserHistory(user *models.User, command string) error {
@@ -75,12 +77,14 @@ func AddAnonymousHistory(command string) {
 }
 
 func StoreCommandHistory(input string) error {
-	if vars.CurrentUser.Username == "" {
-		AddAnonymousHistory(input)
-	} else {
-		err := AddUserHistory(vars.CurrentUser, input)
-		if err != nil {
-			return err
+	if !strings.HasPrefix(input, "history") {
+		if vars.CurrentUser.Username == "" {
+			AddAnonymousHistory(input)
+		} else {
+			err := AddUserHistory(vars.CurrentUser, input)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -105,6 +109,7 @@ func GetUserCommandsSummary() ([]CommandSummary, error) {
 	}
 
 	summaries := make([]CommandSummary, len(results))
+
 	for i, result := range results {
 		summaries[i] = CommandSummary{
 			Command:    result.Command,
@@ -133,6 +138,7 @@ func GetAnonymousCommandsSummary() ([]CommandSummary, error) {
 			}
 		} else {
 			summary.Count++
+
 			if entry.Timestamp.After(summary.LatestUsed) {
 				summary.LatestUsed = entry.Timestamp
 			}
@@ -148,6 +154,7 @@ func GetAnonymousCommandsSummary() ([]CommandSummary, error) {
 		if summaries[i].Count != summaries[j].Count {
 			return summaries[i].Count > summaries[j].Count
 		}
+
 		return summaries[i].LatestUsed.After(summaries[j].LatestUsed)
 	})
 
@@ -170,6 +177,7 @@ func FormatCommandSummaryTable(summaries []CommandSummary) string {
 
 	for _, summary := range summaries {
 		var builder strings.Builder
+
 		padding := commandMaxLength - len(summary.Command)
 		builder.WriteString("| ")
 		builder.WriteString(summary.Command)
@@ -179,6 +187,7 @@ func FormatCommandSummaryTable(summaries []CommandSummary) string {
 		builder.WriteString(" | ")
 		historyLines = append(historyLines, builder.String())
 	}
+
 	return strings.Join(historyLines, "\n")
 }
 
