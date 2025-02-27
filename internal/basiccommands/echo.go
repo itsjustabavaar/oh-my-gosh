@@ -2,6 +2,7 @@ package basiccommands
 
 import (
 	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 	"strings"
@@ -21,7 +22,7 @@ func (e *EchoCommand) Handler() {
 		_, _ = fmt.Fprintln(vars.StandardOutput, processDoubleQuotedStrings(echoArgument))
 	}
 
-	echoPhrases := strings.Split(echoArgument, " ")
+	echoPhrases := utils.SplitInput(echoArgument, " ")
 
 	for idx, phrase := range echoPhrases {
 		if strings.Contains(phrase, "$") {
