@@ -5,7 +5,9 @@ import (
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"golang.org/x/term"
 	"os"
+	"os/exec"
 	"os/signal"
+	"runtime"
 	"strings"
 	"syscall"
 )
@@ -19,6 +21,25 @@ func SplitInput(input string, separationMethod string) []string {
 		}
 	}
 	return parsedComponents
+}
+
+func ClearScreen() error {
+	var cmd *exec.Cmd
+
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/c", "cls")
+	} else {
+		cmd = exec.Command("clear")
+	}
+
+	cmd.Stdout = os.Stdout
+
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func Error(commandName string, err error) {

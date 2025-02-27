@@ -21,6 +21,7 @@ func main() {
 	workingDirectory := &vars.CurrentWorkingDirectory
 
 	oldState, err := term.GetState(int(syscall.Stdin))
+
 	if err != nil {
 		fmt.Println("Failed to get terminal state:", err)
 		return
@@ -35,23 +36,40 @@ func main() {
 	}
 
 	for {
-		*workingDirectory = utils.GetCurrentDirectory()
-		fmt.Printf("%s:%s:%s ", colors.WorkingDirectoryColor(*workingDirectory), colors.UserColor(vars.CurrentUser.Username), vars.Prompt)
+		printPrompt(workingDirectory)
 
 		if !scanner.Scan() {
 			break
 		}
 
 		input := scanner.Text()
+
+		if input == "" {
+			continue
+		}
+
 		if !strings.HasPrefix(input, "history") {
 			err = basiccommands.StoreCommandHistory(input)
+			if err != nil {
+				_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
+				os.Exit(1)
+			}
 		}
-		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
-			os.Exit(1)
+
+		if strings.HasPrefix(input, "clear") || strings.HasPrefix(input, "cls") {
+			err := utils.ClearScreen()
+			if err != nil {
+				_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
+				os.Exit(1)
+			}
+			continue
 		}
 
 		handler.InputHandler(input)
-
 	}
+}
+
+func printPrompt(workingDirectory *string) {
+	*workingDirectory = utils.GetCurrentDirectory()
+	fmt.Printf("%s:%s:%s ", colors.WorkingDirectoryColor(*workingDirectory), colors.UserColor(vars.CurrentUser.Username), vars.Prompt)
 }
