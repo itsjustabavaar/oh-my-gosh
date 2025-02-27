@@ -6,6 +6,7 @@ import (
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
+	"path/filepath"
 	"strings"
 	"syscall"
 )
@@ -35,8 +36,8 @@ func (c *CdCommand) Handler() {
 		err = os.Chdir(homeDirectory)
 		if err != nil {
 			utils.Error(cdCommand, err)
-			return
 		}
+		return
 	}
 
 	destinationDirectory := components[1]
@@ -51,8 +52,11 @@ func (c *CdCommand) Handler() {
 		destinationDirectory = strings.ReplaceAll(destinationDirectory, "~", homeDirectory)
 	} else {
 		pathComponents := strings.Split(destinationDirectory, "/")
+		var pathBuilder string
 		for _, component := range pathComponents {
-			if strings.Contains(component, ".") {
+			pathBuilder = filepath.Join(pathBuilder, component)
+			info, statErr := os.Stat(pathBuilder)
+			if statErr == nil && !info.IsDir() {
 				utils.Error(cdCommand, fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/")))
 				return
 			}
