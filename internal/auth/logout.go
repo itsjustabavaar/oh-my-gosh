@@ -12,7 +12,7 @@ type LogOutCommand struct {
 	Output string
 }
 
-func (l *LogOutCommand) Handler() {
+func (l *LogOutCommand) Execute() {
 	if vars.CurrentUser.Username == "" {
 		utils.PrintError(logoutCommand, utils.ErrAlreadyLoggedOut)
 		return

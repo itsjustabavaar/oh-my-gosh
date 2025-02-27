@@ -16,7 +16,7 @@ type ExitCommand struct {
 	Output string
 }
 
-func (e *ExitCommand) Handler() {
+func (e *ExitCommand) Execute() {
 	var exitCode *int = nil
 
 	components := strings.Split(e.Input, " ")

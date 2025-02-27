@@ -14,7 +14,7 @@ type LoginCommand struct {
 	Output string
 }
 
-func (l *LoginCommand) Handler() {
+func (l *LoginCommand) Execute() {
 	components := utils.SplitInput(l.Input, " ")
 	if len(components) > 2 {
 		utils.PrintError(loginCommand, utils.ErrTooManyArguments)

@@ -17,7 +17,7 @@ type TypeCommand struct {
 	Output string
 }
 
-func (t *TypeCommand) Handler() {
+func (t *TypeCommand) Execute() {
 	components := utils.SplitInput(t.Input, " ")
 	if len(components) == 1 {
 		utils.PrintError(typeCommand, utils.ErrNotEnoughArguments)

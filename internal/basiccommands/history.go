@@ -24,7 +24,7 @@ type CommandSummary struct {
 	LatestUsed time.Time
 }
 
-func (h *HistoryCommand) Handler() {
+func (h *HistoryCommand) Execute() {
 	components := utils.SplitInput(h.Input, " ")
 
 	if len(components) > 1 && components[1] == "clean" {

@@ -13,7 +13,7 @@ type AddUserCommand struct {
 	Output string
 }
 
-func (a *AddUserCommand) Handler() {
+func (a *AddUserCommand) Execute() {
 	components := utils.SplitInput(a.Input, " ")
 	if len(components) == 1 {
 		utils.PrintError(addUserCommand, utils.ErrUsernameNotEntered)

@@ -18,7 +18,7 @@ type CdCommand struct {
 	Output string
 }
 
-func (c *CdCommand) Handler() {
+func (c *CdCommand) Execute() {
 	homeDirectory, err := os.UserHomeDir()
 	if err != nil {
 		utils.PrintError(cdCommand, err)

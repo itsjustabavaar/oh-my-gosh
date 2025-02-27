@@ -15,7 +15,7 @@ type SystemCommand struct {
 	Output string
 }
 
-func (s *SystemCommand) Handler() {
+func (s *SystemCommand) Execute() {
 	components := utils.SplitInput(s.Input, " ")
 
 	command, arguments := components[0], components[1:]

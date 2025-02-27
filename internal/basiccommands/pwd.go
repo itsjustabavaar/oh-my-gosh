@@ -11,7 +11,7 @@ type PwdCommand struct {
 	Output string
 }
 
-func (p *PwdCommand) Handler() {
+func (p *PwdCommand) Execute() {
 	var err error
 	p.Output, err = os.Getwd()
 	if err != nil {

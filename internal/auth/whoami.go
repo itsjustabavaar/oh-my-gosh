@@ -9,7 +9,7 @@ type WhoAmICommand struct {
 	Output string
 }
 
-func (w *WhoAmICommand) Handler() {
+func (w *WhoAmICommand) Execute() {
 	w.Output = "Anonymous"
 
 	if vars.CurrentUser.Username != "" {

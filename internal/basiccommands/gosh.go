@@ -8,7 +8,7 @@ type GoshCommand struct {
 	Output string
 }
 
-func (g *GoshCommand) Handler() {
+func (g *GoshCommand) Execute() {
 	g.Output = "I'm Here! :)"
 	utils.PrintOutput(g.Output)
 }

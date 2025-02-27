@@ -14,7 +14,7 @@ type CatCommand struct {
 	Output string
 }
 
-func (c *CatCommand) Handler() {
+func (c *CatCommand) Execute() {
 	components := utils.SplitInput(c.Input, " ")
 
 	if len(components) == 1 {

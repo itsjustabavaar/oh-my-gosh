@@ -46,7 +46,7 @@ func InputHandler(input string) {
 		command = &systemcommands.SystemCommand{Input: input}
 	}
 
-	command.Handler()
+	command.Execute()
 
 	redirections.RestoreStates(file)
 }

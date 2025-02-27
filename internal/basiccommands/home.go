@@ -12,7 +12,7 @@ type HomeCommand struct {
 	Output string
 }
 
-func (h *HomeCommand) Handler() {
+func (h *HomeCommand) Execute() {
 	homeDirectory, err := os.UserHomeDir()
 	if err != nil {
 		utils.PrintError(homeCommand, err)

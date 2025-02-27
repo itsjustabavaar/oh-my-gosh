@@ -11,7 +11,7 @@ type EchoCommand struct {
 	Output string
 }
 
-func (e *EchoCommand) Handler() {
+func (e *EchoCommand) Execute() {
 	echoArgument := strings.TrimPrefix(e.Input, "echo ")
 	if strings.HasPrefix(echoArgument, "'") && strings.HasSuffix(echoArgument, "'") {
 		utils.PrintOutput(strings.ReplaceAll(echoArgument, "'", ""))
