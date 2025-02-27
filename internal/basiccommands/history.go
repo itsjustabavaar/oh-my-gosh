@@ -14,6 +14,7 @@ import (
 const historyCommand = "historyCommand"
 
 type HistoryCommand struct {
+	Input  string
 	Output string
 }
 
@@ -24,6 +25,18 @@ type CommandSummary struct {
 }
 
 func (h *HistoryCommand) Handler() {
+	components := utils.SplitInput(h.Input, " ")
+	if len(components) > 1 {
+		if components[1] == "clean" {
+			cleaningErr := cleanHistory()
+			if cleaningErr != nil {
+				utils.Error(historyCommand, utils.ErrCleaningHistory)
+				return
+			}
+			_, _ = fmt.Fprint(vars.StandardOutput, h.Output)
+			return
+		}
+	}
 	commandsSummary := make([]CommandSummary, 0)
 	var err error
 
@@ -167,4 +180,19 @@ func FormatCommandSummaryTable(summaries []CommandSummary) string {
 		historyLines = append(historyLines, builder.String())
 	}
 	return strings.Join(historyLines, "\n")
+}
+
+func cleanHistory() error {
+	if vars.CurrentUser.Username == "" {
+		vars.AnonymousHistory = make([]vars.History, 0)
+		return nil
+	}
+
+	result := database.GetDB().Where("user_id = ?", vars.CurrentUser.ID).Delete(&models.CommandHistory{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }

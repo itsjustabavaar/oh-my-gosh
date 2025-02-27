@@ -35,7 +35,7 @@ func InputHandler(input string) {
 	case strings.HasPrefix(input, "gosh"):
 		command = &basiccommands.GoshCommand{}
 	case strings.HasPrefix(input, "history"):
-		command = &basiccommands.HistoryCommand{}
+		command = &basiccommands.HistoryCommand{Input: input}
 	case strings.HasPrefix(input, "type"):
 		command = &basiccommands.TypeCommand{Input: input}
 	default:
