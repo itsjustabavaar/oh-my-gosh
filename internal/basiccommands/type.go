@@ -23,18 +23,19 @@ func (t *TypeCommand) Handler() {
 		utils.Error(typeCommand, utils.ErrNotEnoughArguments)
 		return
 	}
-	if len(components) > 2 {
-		utils.Error(typeCommand, utils.ErrTooManyArguments)
-		return
+	//if len(components) > 2 {
+	//	utils.Error(typeCommand, utils.ErrTooManyArguments)
+	//	return
+	//}
+	for i := 1; i < len(components); i++ {
+		desiredType := components[i]
+		result, err := FindingType(desiredType)
+		if err != nil {
+			utils.Error(typeCommand, err)
+			continue
+		}
+		_, _ = fmt.Fprintln(os.Stdout, result)
 	}
-	desiredType := components[1]
-	result, err := FindingType(desiredType)
-	if err != nil {
-		utils.Error(typeCommand, err)
-		return
-	}
-	_, _ = fmt.Fprintln(os.Stdout, result)
-
 }
 
 func FindingType(inputType string) (string, error) {
