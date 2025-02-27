@@ -36,3 +36,15 @@ var GoshBuiltins = map[string]struct{}{
 	"pwd":     {},
 	"type":    {},
 }
+
+var WindowsBuiltins = map[string]struct{}{
+	"dir":   {},
+	"mkdir": {},
+	"rmdir": {},
+	"del":   {},
+	"cls":   {},
+	"copy":  {},
+	"move":  {},
+	"ren":   {},
+	"ping":  {},
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 type SystemCommand struct {
@@ -17,6 +18,14 @@ type SystemCommand struct {
 func (s *SystemCommand) Handler() {
 	components := utils.SplitInput(s.Input, " ")
 	command, arguments := components[0], components[1:]
+	if runtime.GOOS == "windows" {
+		_, ok := vars.WindowsBuiltins[command]
+		if ok {
+			command = "cmd"
+			arguments = []string{"/C"}
+			arguments = append(arguments, components...)
+		}
+	}
 	_, err := basiccommands.FindingType(command)
 	if err == nil {
 		cmd := exec.Command(command, arguments...)
