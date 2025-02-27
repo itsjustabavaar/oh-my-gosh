@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/itsjustabavaar/oh-my-gosh/internal/auth"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/basiccommands"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/redirections"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/systemcommands"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"strings"
@@ -10,6 +11,8 @@ import (
 
 func InputHandler(input string) {
 	var command utils.Command
+
+	file := redirections.DetectAndApplyRedirection(&input)
 
 	switch {
 	case strings.HasPrefix(input, "adduser"):
@@ -44,4 +47,6 @@ func InputHandler(input string) {
 	}
 
 	command.Handler()
+
+	redirections.RestoreStds(file)
 }

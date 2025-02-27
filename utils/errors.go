@@ -24,4 +24,6 @@ var (
 	ErrPermissionDenied   = errors.New("permission denied")
 	ErrChangingDirectory  = errors.New("error changing directory")
 	ErrCleaningHistory    = errors.New("error cleaning history")
+	ErrUnknownMode        = errors.New("unknown mode")
+	ErrUnknownRedirection = errors.New("unknown redirection")
 )

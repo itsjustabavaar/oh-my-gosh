@@ -48,3 +48,14 @@ var WindowsBuiltins = map[string]struct{}{
 	"ren":   {},
 	"ping":  {},
 }
+
+var RedirectionSigns = map[string]struct{}{
+	">":   {},
+	">>":  {},
+	"1>":  {},
+	"1>>": {},
+	"2>":  {},
+	"2>>": {},
+	"&>":  {},
+	"&>>": {},
+}
