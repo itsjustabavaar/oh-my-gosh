@@ -18,7 +18,7 @@ type CatCommand struct {
 func (c *CatCommand) Handler() {
 	components := utils.SplitInput(c.Input, " ")
 	if len(components) == 1 {
-		utils.Error(catCommand, utils.ErrUsernameNotEntered)
+		utils.Error(catCommand, utils.ErrNotEnoughArguments)
 		return
 	}
 
@@ -26,7 +26,6 @@ func (c *CatCommand) Handler() {
 		fileContent, catErr := catFile(components[i])
 		if catErr != nil {
 			utils.Error(catCommand, fmt.Errorf("%s: %s", components[i], catErr))
-			return
 		} else {
 			_, _ = fmt.Fprintln(vars.StandardOutput, fileContent)
 		}
