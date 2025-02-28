@@ -1,0 +1,173 @@
+package handler
+
+import (
+	"bytes"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
+	"github.com/itsjustabavaar/oh-my-gosh/utils"
+	"os"
+	"testing"
+
+	"github.com/itsjustabavaar/oh-my-gosh/vars"
+)
+
+/*
+1. statement coverage:
+	- go test ./... -coverprofile='coverage.out'
+	- go tool cover -html='coverage.out'
+*/
+
+func TestAddUserEmptyPassword(t *testing.T) {
+	inputCommand := "adduser testuser"
+
+	oldStdout := vars.StandardOutput
+	r, w, _ := os.Pipe()
+	vars.StandardOutput = w
+
+	InputHandler(inputCommand)
+	err := w.Close()
+	if err != nil {
+		return
+	}
+	vars.StandardOutput = oldStdout
+
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(r)
+	if err != nil {
+		return
+	}
+	output := buf.String()
+
+	output = utils.OutputCleaner(output)
+
+	expectedOutput := "user testuser created successfully"
+	if output != expectedOutput {
+		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	}
+	err = user.DeleteUser("testuser")
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+}
+
+func TestAddUserWithPassword(t *testing.T) {
+	inputCommand := "adduser testuser 1234"
+
+	oldStdout := vars.StandardOutput
+	r, w, _ := os.Pipe()
+	vars.StandardOutput = w
+
+	InputHandler(inputCommand)
+	err := w.Close()
+	if err != nil {
+		return
+	}
+	vars.StandardOutput = oldStdout
+
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(r)
+	if err != nil {
+		return
+	}
+	output := buf.String()
+
+	output = utils.OutputCleaner(output)
+
+	expectedOutput := "user testuser created successfully"
+	if output != expectedOutput {
+		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	}
+	err = user.DeleteUser("testuser")
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+}
+
+func TestAddUserWithoutUsername(t *testing.T) {
+	inputCommand := "adduser"
+	oldStderr := vars.StandardError
+	r, w, _ := os.Pipe()
+	vars.StandardError = w
+
+	InputHandler(inputCommand)
+	err := w.Close()
+	if err != nil {
+		return
+	}
+	vars.StandardError = oldStderr
+
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(r)
+	if err != nil {
+		return
+	}
+	output := buf.String()
+
+	output = utils.OutputCleaner(output)
+
+	expectedOutput := "-gosh: adduser: username not entered"
+	if output != expectedOutput {
+		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	}
+}
+
+func TestAddUserTooManyArguments(t *testing.T) {
+	inputCommand := "adduser testuser testuser testuser"
+	oldStderr := vars.StandardError
+	r, w, _ := os.Pipe()
+	vars.StandardError = w
+
+	InputHandler(inputCommand)
+	err := w.Close()
+	if err != nil {
+		return
+	}
+	vars.StandardError = oldStderr
+
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(r)
+	if err != nil {
+		return
+	}
+	output := buf.String()
+
+	output = utils.OutputCleaner(output)
+
+	expectedOutput := "-gosh: adduser: too many arguments"
+	if output != expectedOutput {
+		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	}
+}
+
+func TestAddUserAlreadyExists(t *testing.T) {
+	inputCommand := "adduser testuser"
+	InputHandler(inputCommand)
+
+	oldStderr := vars.StandardError
+	r, w, _ := os.Pipe()
+	vars.StandardError = w
+
+	InputHandler(inputCommand)
+	err := w.Close()
+	if err != nil {
+		return
+	}
+	vars.StandardError = oldStderr
+
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(r)
+	if err != nil {
+		return
+	}
+	output := buf.String()
+
+	output = utils.OutputCleaner(output)
+
+	expectedOutput := "-gosh: adduser: user already exists"
+	if output != expectedOutput {
+		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	}
+	err = user.DeleteUser("testuser")
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+}

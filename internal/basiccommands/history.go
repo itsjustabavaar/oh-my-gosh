@@ -163,7 +163,7 @@ func GetAnonymousCommandsSummary() ([]CommandSummary, error) {
 
 func FormatCommandSummaryTable(summaries []CommandSummary) string {
 	if len(summaries) == 0 {
-		return "No commands found"
+		return "no commands found"
 	}
 
 	commandMaxLength := 0
@@ -197,11 +197,7 @@ func cleanHistory() error {
 		return nil
 	}
 
-	result := database.GetDB().Where("user_id = ?", vars.CurrentUser.ID).Delete(&models.CommandHistory{})
-
-	if result.Error != nil {
-		return result.Error
-	}
+	_ = database.GetDB().Where("user_id = ?", vars.CurrentUser.ID).Delete(&models.CommandHistory{})
 
 	return nil
 }

@@ -12,11 +12,6 @@ type PwdCommand struct {
 }
 
 func (p *PwdCommand) Execute() {
-	var err error
-	p.Output, err = os.Getwd()
-	if err != nil {
-		utils.PrintError(pwdCommand, err)
-		return
-	}
+	p.Output, _ = os.Getwd()
 	utils.PrintOutput(p.Output)
 }

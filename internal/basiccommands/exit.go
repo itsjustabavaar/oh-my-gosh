@@ -1,9 +1,7 @@
 package basiccommands
 
 import (
-	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 	"strconv"
 	"strings"
@@ -36,11 +34,6 @@ func (e *ExitCommand) Execute() {
 		}
 
 		exitCode = &code
-	}
-
-	if vars.CurrentUser.Username != "" {
-		e.Output = fmt.Sprintf("%s logged out\n", vars.CurrentUser.Username)
-		utils.PrintOutput(e.Output)
 	}
 
 	if exitCode != nil {

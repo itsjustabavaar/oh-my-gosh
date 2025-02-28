@@ -37,11 +37,7 @@ func (s *SystemCommand) Execute() {
 
 	cmd.Dir, _ = os.Getwd()
 
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		_, _ = fmt.Fprintln(vars.StandardError, err)
-		return
-	}
+	output, _ := cmd.CombinedOutput()
 
 	utils.PrintOutput(string(output))
 	return

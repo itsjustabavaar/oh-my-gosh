@@ -13,11 +13,7 @@ type HomeCommand struct {
 }
 
 func (h *HomeCommand) Execute() {
-	homeDirectory, err := os.UserHomeDir()
-	if err != nil {
-		utils.PrintError(homeCommand, err)
-		return
-	}
+	homeDirectory, _ := os.UserHomeDir()
 
 	h.Output = fmt.Sprintf("-gosh: %s: is a directory, it's your homeCommand :)\n", homeDirectory)
 

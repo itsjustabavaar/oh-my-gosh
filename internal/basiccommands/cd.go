@@ -19,29 +19,31 @@ type CdCommand struct {
 }
 
 func (c *CdCommand) Execute() {
-	homeDirectory, err := os.UserHomeDir()
-	if err != nil {
-		utils.PrintError(cdCommand, err)
-		return
-	}
+	homeDirectory, _ := os.UserHomeDir()
 
 	workingDirectory := &vars.CurrentWorkingDirectory
 
 	components := utils.SplitInput(c.Input, " ")
-	if len(components) > 2 {
+
+	componentsCount := len(components)
+
+	switch {
+
+	case componentsCount == 1:
+		_ = os.Chdir(homeDirectory)
+		*workingDirectory = homeDirectory
+		return
+
+	case componentsCount > 2:
 		utils.PrintError(cdCommand, utils.ErrTooManyArguments)
 		return
-	}
 
-	if len(components) == 1 {
-		err = os.Chdir(homeDirectory)
-		if err != nil {
-			utils.PrintError(cdCommand, err)
-		}
-		return
+	default:
+
 	}
 
 	destinationDirectory := components[1]
+
 	switch {
 
 	case destinationDirectory == "-":
@@ -61,7 +63,7 @@ func (c *CdCommand) Execute() {
 			pathBuilder = filepath.Join(pathBuilder, component)
 			info, statErr := os.Stat(pathBuilder)
 			if statErr == nil && !info.IsDir() {
-				err = fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/"))
+				err := fmt.Errorf("%s is not a directory", strings.Join(pathComponents, "/"))
 				utils.PrintError(cdCommand, err)
 				return
 			}
@@ -69,7 +71,7 @@ func (c *CdCommand) Execute() {
 
 	}
 
-	err = os.Chdir(destinationDirectory)
+	err := os.Chdir(destinationDirectory)
 	if err != nil {
 		var pathErr *os.PathError
 
@@ -77,9 +79,6 @@ func (c *CdCommand) Execute() {
 			switch {
 			case errors.Is(pathErr.Err, syscall.ENOENT):
 				utils.PrintError(cdCommand, utils.ErrDirectoryNotExists)
-				return
-			case errors.Is(pathErr.Err, syscall.EACCES):
-				utils.PrintError(cdCommand, utils.ErrPermissionDenied)
 				return
 			default:
 				utils.PrintError(cdCommand, utils.ErrChangingDirectory)
@@ -90,17 +89,13 @@ func (c *CdCommand) Execute() {
 
 	previousDirectory := *workingDirectory
 
-	if strings.HasPrefix(previousDirectory, "~") {
-		previousDirectory = strings.ReplaceAll(previousDirectory, "~", homeDirectory)
-	}
+	_ = os.Setenv("OLDPWD", previousDirectory)
 
-	err = os.Setenv("OLDPWD", previousDirectory)
-	if err != nil {
-		utils.PrintError(cdCommand, err)
-		return
-	}
+	currentDirectory, _ := os.Getwd()
 
-	*workingDirectory = destinationDirectory
+	absPath, _ := filepath.Abs(currentDirectory)
+
+	*workingDirectory = absPath
 
 	utils.PrintOutput(c.Output)
 }

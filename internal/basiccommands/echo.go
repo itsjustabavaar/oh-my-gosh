@@ -15,9 +15,11 @@ func (e *EchoCommand) Execute() {
 	echoArgument := strings.TrimPrefix(e.Input, "echo ")
 	if strings.HasPrefix(echoArgument, "'") && strings.HasSuffix(echoArgument, "'") {
 		utils.PrintOutput(strings.ReplaceAll(echoArgument, "'", ""))
+		return
 	}
 	if strings.HasPrefix(echoArgument, "\"") && strings.HasSuffix(echoArgument, "\"") {
 		utils.PrintOutput(processDoubleQuotedStrings(echoArgument))
+		return
 	}
 
 	echoPhrases := utils.SplitInput(echoArgument, " ")

@@ -86,9 +86,6 @@ func applyRedirection(inputRedirection string, inputFilePath string) (*os.File, 
 		}
 
 		vars.StandardOutput, vars.StandardError = file, file
-
-	default:
-		return nil, utils.ErrUnknownRedirection
 	}
 
 	return file, nil
@@ -96,11 +93,7 @@ func applyRedirection(inputRedirection string, inputFilePath string) (*os.File, 
 
 func openFileRedirection(filepath string, openMode string) (*os.File, error) {
 	if openMode == "override" {
-		file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-		if err != nil {
-			return nil, utils.ErrFileOpening
-		}
-
+		file, _ := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 		return file, nil
 	}
 

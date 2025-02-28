@@ -42,7 +42,6 @@ func InputHandler(input string) {
 	case strings.HasPrefix(input, "type"):
 		command = &basiccommands.TypeCommand{Input: input}
 	default:
-		//_, _ = fmt.Fprintln(vars.StandardOutput, input)
 		command = &systemcommands.SystemCommand{Input: input}
 	}
 

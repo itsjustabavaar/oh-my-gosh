@@ -46,16 +46,10 @@ func catFile(filename string) (string, error) {
 	}
 
 	defer func(file *os.File) {
-		closeErr := file.Close()
-		if closeErr != nil {
-			_ = fmt.Errorf(utils.ErrFileClosing.Error())
-		}
+		_ = file.Close()
 	}(file)
 
-	data, readErr := io.ReadAll(file)
-	if readErr != nil {
-		return fileOutput, utils.ErrFileReading
-	}
+	data, _ := io.ReadAll(file)
 
 	fileOutput = string(data)
 

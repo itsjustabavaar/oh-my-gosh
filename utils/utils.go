@@ -47,6 +47,10 @@ func PrintError(commandName string, err error) {
 	_, _ = fmt.Fprintln(vars.StandardError, err)
 }
 
+func OutputCleaner(input string) string {
+	return strings.ReplaceAll(input, "\n", "")
+}
+
 func PrintOutput(output string) {
 	_, _ = fmt.Fprintln(vars.StandardOutput, output)
 }
@@ -70,9 +74,10 @@ func HandleInterrupt() {
 }
 
 func GetCurrentDirectory() string {
-	currentDirectory, err := os.Getwd()
-	if err != nil {
-		_ = fmt.Errorf("unable to determine current directory")
+	var currentDirectory string
+
+	if vars.CurrentWorkingDirectory == "" {
+		vars.CurrentWorkingDirectory, _ = os.Getwd()
 	}
 
 	userHomeDirectory, err := os.UserHomeDir()
@@ -80,8 +85,8 @@ func GetCurrentDirectory() string {
 		_ = fmt.Errorf("unable to determine home directory")
 	}
 
-	if strings.HasPrefix(currentDirectory, userHomeDirectory) {
-		currentDirectory = strings.ReplaceAll(currentDirectory, userHomeDirectory, "~")
+	if strings.HasPrefix(vars.CurrentWorkingDirectory, userHomeDirectory) {
+		currentDirectory = strings.ReplaceAll(vars.CurrentWorkingDirectory, userHomeDirectory, "~")
 	}
 
 	return currentDirectory

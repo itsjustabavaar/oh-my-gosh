@@ -16,7 +16,6 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	workingDirectory := &vars.CurrentWorkingDirectory
 
 	utils.HandleInterrupt()
 
@@ -27,7 +26,7 @@ func main() {
 	}
 
 	for {
-		printPrompt(workingDirectory)
+		printPrompt()
 
 		if !scanner.Scan() {
 			break
@@ -58,7 +57,7 @@ func main() {
 	}
 }
 
-func printPrompt(workingDirectory *string) {
-	*workingDirectory = utils.GetCurrentDirectory()
-	fmt.Printf("%s:%s:%s ", colors.WorkingDirectoryColor(*workingDirectory), colors.UserColor(vars.CurrentUser.Username), vars.Prompt)
+func printPrompt() {
+	workingDirectory := utils.GetCurrentDirectory()
+	fmt.Printf("%s:%s:%s ", colors.WorkingDirectoryColor(workingDirectory), colors.UserColor(vars.CurrentUser.Username), vars.Prompt)
 }

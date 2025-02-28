@@ -48,6 +48,13 @@ func AddUser(username, password string) error {
 	return nil
 }
 
+func DeleteUser(username string) error {
+	if err := database.GetDB().Where("username = ?", username).Delete(&models.User{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func Login(username, password string) (*models.User, error) {
 	var user models.User
 

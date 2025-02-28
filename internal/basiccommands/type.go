@@ -26,7 +26,13 @@ func (t *TypeCommand) Execute() {
 
 	for i := 1; i < len(components); i++ {
 		desiredType := components[i]
-
+		if runtime.GOOS == "windows" {
+			if _, ok := vars.WindowsBuiltins[desiredType]; ok {
+				t.Output = fmt.Sprintf("%s is your operating system builtin", desiredType)
+				utils.PrintOutput(t.Output)
+				return
+			}
+		}
 		result, err := FindingType(desiredType)
 		if err != nil {
 			utils.PrintError(typeCommand, err)
