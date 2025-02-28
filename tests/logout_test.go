@@ -1,7 +1,8 @@
-package handler
+package tests
 
 import (
 	"bytes"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
@@ -9,18 +10,22 @@ import (
 	"testing"
 )
 
-func TestAnonymousWhoAmI(t *testing.T) {
+func TestLoginLogout(t *testing.T) {
+	addUserCommand := "adduser testuser4 1234"
+
+	handler.InputHandler(addUserCommand)
+
+	loginCommand := "login testuser4 1234"
+
+	handler.InputHandler(loginCommand)
+
 	logoutCommand := "logout"
-
-	InputHandler(logoutCommand)
-
-	whoAmICommand := "whoami"
 
 	oldStdout := vars.StandardOutput
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(whoAmICommand)
+	handler.InputHandler(logoutCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -36,33 +41,39 @@ func TestAnonymousWhoAmI(t *testing.T) {
 
 	output = utils.OutputCleaner(output)
 
-	expectedOutput := "Anonymous"
+	expectedOutput := "logout succeed"
 	if output != expectedOutput {
 		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	}
+	err = user.DeleteUser("testuser4")
+	if err != nil {
+		t.Fatal("unexpected error")
 	}
 }
 
-func TestUserWhoAmI(t *testing.T) {
-	addUserCommand := "adduser testuser5 1234"
+func TestAlreadyLoggedOut(t *testing.T) {
+	addUserCommand := "adduser testuser4 1234"
 
-	InputHandler(addUserCommand)
+	handler.InputHandler(addUserCommand)
 
-	loginCommand := "login testuser5 1234"
+	loginCommand := "login testuser4 1234"
 
-	InputHandler(loginCommand)
+	handler.InputHandler(loginCommand)
 
-	whoAmICommand := "whoami"
+	logoutCommand := "logout"
 
-	oldStdout := vars.StandardOutput
+	handler.InputHandler(logoutCommand)
+
+	oldStderr := vars.StandardError
 	r, w, _ := os.Pipe()
-	vars.StandardOutput = w
+	vars.StandardError = w
 
-	InputHandler(whoAmICommand)
+	handler.InputHandler(logoutCommand)
 	err := w.Close()
 	if err != nil {
 		return
 	}
-	vars.StandardOutput = oldStdout
+	vars.StandardError = oldStderr
 
 	var buf bytes.Buffer
 	_, err = buf.ReadFrom(r)
@@ -73,11 +84,11 @@ func TestUserWhoAmI(t *testing.T) {
 
 	output = utils.OutputCleaner(output)
 
-	expectedOutput := "testuser5"
+	expectedOutput := "-gosh: logout: already logged out"
 	if output != expectedOutput {
 		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
 	}
-	err = user.DeleteUser("testuser5")
+	err = user.DeleteUser("testuser4")
 	if err != nil {
 		t.Fatal("unexpected error")
 	}

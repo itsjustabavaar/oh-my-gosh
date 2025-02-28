@@ -1,8 +1,9 @@
-package handler
+package tests
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
@@ -16,7 +17,7 @@ func TestEchoSingleQuote(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(echoCommand)
+	handler.InputHandler(echoCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -45,7 +46,7 @@ func TestEchoDoubleQuote(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(echoCommand)
+	handler.InputHandler(echoCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -76,7 +77,7 @@ func TestEchoMultipleWithEnv(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(echoCommand)
+	handler.InputHandler(echoCommand)
 	err := w.Close()
 	if err != nil {
 		return

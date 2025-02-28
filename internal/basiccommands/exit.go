@@ -1,6 +1,7 @@
 package basiccommands
 
 import (
+	"fmt"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"os"
 	"strconv"
@@ -37,6 +38,8 @@ func (e *ExitCommand) Execute() {
 	}
 
 	if exitCode != nil {
+		e.Output = fmt.Sprintf("exit status %d", *exitCode)
+		utils.PrintOutput(e.Output)
 		os.Exit(*exitCode)
 	}
 }

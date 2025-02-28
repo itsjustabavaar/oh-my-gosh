@@ -1,7 +1,8 @@
-package handler
+package tests
 
 import (
 	"bytes"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
@@ -10,10 +11,10 @@ import (
 
 func TestOverrideRedirections(t *testing.T) {
 	fillFileCommand := "echo salam > salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	fillFileCommand = "echo salam 1> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	catCommand := "cat salam.txt"
 
@@ -21,7 +22,7 @@ func TestOverrideRedirections(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -49,10 +50,10 @@ func TestOverrideRedirections(t *testing.T) {
 
 func TestAppendRedirection(t *testing.T) {
 	fillFileCommand := "echo salam >> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	fillFileCommand = "echo salam 1>> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	catCommand := "cat salam.txt"
 
@@ -60,7 +61,7 @@ func TestAppendRedirection(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -88,7 +89,7 @@ func TestAppendRedirection(t *testing.T) {
 
 func TestOverrideErrorRedirection(t *testing.T) {
 	fillFileCommand := "type hfwieuh 2> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	catCommand := "cat salam.txt"
 
@@ -96,7 +97,7 @@ func TestOverrideErrorRedirection(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -124,10 +125,10 @@ func TestOverrideErrorRedirection(t *testing.T) {
 
 func TestAppendErrorRedirection(t *testing.T) {
 	fillFileCommand := "type hfwieuh 2>> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	fillFileCommand = "type hfwieuh 2>> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	catCommand := "cat salam.txt"
 
@@ -135,7 +136,7 @@ func TestAppendErrorRedirection(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -163,10 +164,10 @@ func TestAppendErrorRedirection(t *testing.T) {
 
 func TestBothRedirection(t *testing.T) {
 	fillFileCommand := "type hfwieuh &> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	fillFileCommand = "echo salam &>> salam.txt"
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	catCommand := "cat salam.txt"
 
@@ -174,7 +175,7 @@ func TestBothRedirection(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return

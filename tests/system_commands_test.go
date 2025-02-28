@@ -1,7 +1,8 @@
-package handler
+package tests
 
 import (
 	"bytes"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
@@ -22,7 +23,7 @@ func TestSystemCommands(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(systemCommand)
+	handler.InputHandler(systemCommand)
 	err := w.Close()
 	if err != nil {
 		return

@@ -1,7 +1,8 @@
-package handler
+package tests
 
 import (
 	"bytes"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
@@ -11,7 +12,7 @@ import (
 func TestCat(t *testing.T) {
 	fillFileCommand := "echo salam > salam.txt"
 
-	InputHandler(fillFileCommand)
+	handler.InputHandler(fillFileCommand)
 
 	catCommand := "cat salam.txt"
 
@@ -19,7 +20,7 @@ func TestCat(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -52,7 +53,7 @@ func TestCatNotEnoughArguments(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -81,7 +82,7 @@ func TestCatFileNotFound(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return

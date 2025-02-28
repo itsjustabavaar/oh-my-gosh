@@ -35,6 +35,12 @@ func (c *CatCommand) Execute() {
 func catFile(filename string) (string, error) {
 	var fileOutput string
 
+	info, statErr := os.Stat(filename)
+	if statErr == nil && info.IsDir() {
+		err := fmt.Errorf("is a directory")
+		return "", err
+	}
+
 	file, openErr := os.Open(filename)
 
 	if openErr != nil {

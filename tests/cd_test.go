@@ -1,8 +1,9 @@
-package handler
+package tests
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,7 +15,7 @@ import (
 func TestCdEmpty(t *testing.T) {
 	cdCommand := "cd"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	homeDirectory, err := os.UserHomeDir()
 	if err != nil {
@@ -33,7 +34,7 @@ func TestCdTooManyArguments(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -62,7 +63,7 @@ func TestCdDash(t *testing.T) {
 	}
 	cdCommand := "cd -"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	if vars.CurrentWorkingDirectory != currentDirectory {
 		t.Fatal("unexpected working directory")
@@ -77,7 +78,7 @@ func TestCdHome(t *testing.T) {
 
 	cdCommand := "cd ~"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	if vars.CurrentWorkingDirectory != homeDirectory {
 		t.Fatal("unexpected working directory")
@@ -92,11 +93,11 @@ func TestCdWithTilda(t *testing.T) {
 
 	cdCommand := "cd ~"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	cdCommand = "cd Desktop"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	currWor := vars.CurrentWorkingDirectory
 	if currWor != filepath.Join(homeDirectory, "Desktop") {
@@ -107,15 +108,15 @@ func TestCdWithTilda(t *testing.T) {
 func TestCdToAFile(t *testing.T) {
 	cdCommand := "cd ~"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	cdCommand = "cd Desktop"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	catCommand := "cat salam > salam.txt"
 
-	InputHandler(catCommand)
+	handler.InputHandler(catCommand)
 
 	cdCommand = "cd salam.txt"
 
@@ -123,7 +124,7 @@ func TestCdToAFile(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -153,11 +154,11 @@ func TestCdToAFile(t *testing.T) {
 func TestCdDirectoryNotFound(t *testing.T) {
 	cdCommand := "cd ~"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	cdCommand = "cd Desktop"
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 
 	cdCommand = "cd dueigvwdvnefivurvg"
 
@@ -165,7 +166,7 @@ func TestCdDirectoryNotFound(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(cdCommand)
+	handler.InputHandler(cdCommand)
 	err := w.Close()
 	if err != nil {
 		return

@@ -1,24 +1,23 @@
-package handler
+package tests
 
 import (
 	"bytes"
-	"fmt"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 	"testing"
 )
 
-func TestHome(t *testing.T) {
-	homeDirectory, _ := os.UserHomeDir()
-
-	homeCommand := "~"
+func TestPwd(t *testing.T) {
+	currentDirectory, _ := os.Getwd()
+	pwdCommand := "pwd"
 
 	oldStdout := vars.StandardOutput
 	r, w, _ := os.Pipe()
 	vars.StandardOutput = w
 
-	InputHandler(homeCommand)
+	handler.InputHandler(pwdCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -34,8 +33,7 @@ func TestHome(t *testing.T) {
 
 	output = utils.OutputCleaner(output)
 
-	expectedOutput := fmt.Sprintf("-gosh: %s: is a directory, it's your homeCommand :)", homeDirectory)
-	if output != expectedOutput {
-		t.Fatalf("Expected: %s, Actual: %s", expectedOutput, output)
+	if output != currentDirectory {
+		t.Fatalf("Expected: %s, Actual: %s", currentDirectory, output)
 	}
 }

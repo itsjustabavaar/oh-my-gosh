@@ -1,8 +1,9 @@
-package handler
+package tests
 
 import (
 	"bytes"
 	"errors"
+	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
@@ -17,7 +18,7 @@ func TestExitTooManyArguments(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(exitCommand)
+	handler.InputHandler(exitCommand)
 	err := w.Close()
 	if err != nil {
 		return
@@ -70,7 +71,7 @@ func TestHelperProcessForExitCode(t *testing.T) {
 
 	exitCommand := "exit"
 
-	InputHandler(exitCommand)
+	handler.InputHandler(exitCommand)
 
 	t.Error("Expected function to exit but it didn't")
 }
@@ -106,7 +107,7 @@ func TestHelperProcessForExitCodeZero(t *testing.T) {
 
 	exitCommand := "exit"
 
-	InputHandler(exitCommand)
+	handler.InputHandler(exitCommand)
 
 	t.Error("Expected function to exit but it didn't")
 }
@@ -118,7 +119,7 @@ func TestInvalidExitCode(t *testing.T) {
 	r, w, _ := os.Pipe()
 	vars.StandardError = w
 
-	InputHandler(exitCommand)
+	handler.InputHandler(exitCommand)
 	err := w.Close()
 	if err != nil {
 		return
