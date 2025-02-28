@@ -29,19 +29,20 @@ func (s *SystemCommand) Execute() {
 	}
 
 	_, err := basiccommands.FindingType(command)
-	if err == nil {
-		cmd := exec.Command(command, arguments...)
-
-		cmd.Dir, _ = os.Getwd()
-
-		output, err := cmd.CombinedOutput()
-		if err != nil {
-			_, _ = fmt.Fprintln(vars.StandardError, err)
-			return
-		}
-
-		utils.PrintOutput(string(output))
+	if err != nil {
+		_, _ = fmt.Fprintln(vars.StandardError, err)
 		return
 	}
-	_, _ = fmt.Fprintln(vars.StandardError, err)
+	cmd := exec.Command(command, arguments...)
+
+	cmd.Dir, _ = os.Getwd()
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		_, _ = fmt.Fprintln(vars.StandardError, err)
+		return
+	}
+
+	utils.PrintOutput(string(output))
+	return
 }

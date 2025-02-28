@@ -4,7 +4,6 @@ import (
 	"github.com/itsjustabavaar/oh-my-gosh/internal/user"
 	"github.com/itsjustabavaar/oh-my-gosh/utils"
 	"github.com/itsjustabavaar/oh-my-gosh/vars"
-	"strings"
 )
 
 const loginCommand = "login"
@@ -16,20 +15,18 @@ type LoginCommand struct {
 
 func (l *LoginCommand) Execute() {
 	components := utils.SplitInput(l.Input, " ")
-	if len(components) > 2 {
-		utils.PrintError(loginCommand, utils.ErrTooManyArguments)
-		return
-	}
+	var username, password string
 
-	username := strings.TrimSpace(strings.TrimPrefix(l.Input, "login "))
-	if username == "" || l.Input == "login" {
+	switch len(components) {
+	case 1:
 		utils.PrintError(loginCommand, utils.ErrWhoYouAre)
 		return
-	}
-
-	password, err := utils.PasswordReader("enter password")
-	if err != nil {
-		utils.PrintError(loginCommand, err)
+	case 2:
+		username = components[1]
+	case 3:
+		username, password = components[1], components[2]
+	default:
+		utils.PrintError(loginCommand, utils.ErrTooManyArguments)
 		return
 	}
 
