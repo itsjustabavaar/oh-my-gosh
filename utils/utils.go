@@ -51,23 +51,6 @@ func PrintOutput(output string) {
 	_, _ = fmt.Fprintln(vars.StandardOutput, output)
 }
 
-func PasswordReader(prompt string) (string, error) {
-	var password string
-
-	fmt.Printf("%s: ", prompt)
-
-	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
-	if err != nil {
-		return password, ErrReadingPassword
-	}
-
-	password = string(bytePassword)
-
-	fmt.Println()
-
-	return password, err
-}
-
 func HandleInterrupt() {
 	originalState, err := term.GetState(int(syscall.Stdin))
 
