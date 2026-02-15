@@ -5,12 +5,7 @@ import (
 )
 
 func MigrateDB(db *gorm.DB) error {
-	err := db.AutoMigrate(&User{})
-	if err != nil {
-		return err
-	}
-
-	err = db.AutoMigrate(&CommandHistory{})
+	err := db.AutoMigrate(&User{}, &CommandHistory{})
 	if err != nil {
 		return err
 	}
