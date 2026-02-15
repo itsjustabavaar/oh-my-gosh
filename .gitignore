@@ -27,3 +27,8 @@ go.work.sum
 
 # env file
 .env
+
+dist/
+
+covarage.out
+coverage.html
