@@ -1,9 +1,9 @@
 package dbutil
 
 import (
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/driver/sqlite"
 )
 
 var (
