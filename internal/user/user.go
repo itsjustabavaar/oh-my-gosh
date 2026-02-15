@@ -1,11 +1,12 @@
 package user
 
 import (
-	"github.com/itsjustabavaar/oh-my-gosh/internal/database"
-	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
-	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"golang.org/x/crypto/bcrypt"
 	"time"
+
+	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/util/dbutil"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/util/errorutil"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func HashPassword(password string) (string, error) {
@@ -26,8 +27,13 @@ func VerifyPassword(inputPassword, hashedPassword string) bool {
 func AddUser(username, password string) error {
 	var existingUser models.User
 
-	if err := database.GetDB().Where("username = ?", username).First(&existingUser).Error; err == nil {
-		return utils.ErrUserAlreadyExists
+	db, err := dbutil.GormDB()
+	if err != nil {
+		return err
+	}
+
+	if err := db.Where("username = ?", username).First(&existingUser).Error; err == nil {
+		return errorutil.ErrUserAlreadyExists
 	}
 
 	hashedPassword, err := HashPassword(password)
@@ -41,7 +47,7 @@ func AddUser(username, password string) error {
 		LastLogin: time.Now(),
 	}
 
-	if err = database.GetDB().Create(&user).Error; err != nil {
+	if err = db.Create(&user).Error; err != nil {
 		return err
 	}
 
@@ -49,7 +55,12 @@ func AddUser(username, password string) error {
 }
 
 func DeleteUser(username string) error {
-	if err := database.GetDB().Where("username = ?", username).Delete(&models.User{}).Error; err != nil {
+	db, err := dbutil.GormDB()
+	if err != nil {
+		return err
+	}
+
+	if err := db.Where("username = ?", username).Delete(&models.User{}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -58,18 +69,23 @@ func DeleteUser(username string) error {
 func Login(username, password string) (*models.User, error) {
 	var user models.User
 
-	if err := database.GetDB().Where("username = ?", username).First(&user).Error; err != nil {
-		return nil, utils.ErrUserNotFound
+	db, err := dbutil.GormDB()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, errorutil.ErrUserNotFound
 	}
 
 	ok := VerifyPassword(password, user.Password)
 	if !ok {
-		return nil, utils.ErrInvalidPassword
+		return nil, errorutil.ErrInvalidPassword
 	}
 
 	user.LastLogin = time.Now()
 
-	if err := database.GetDB().Save(&user).Error; err != nil {
+	if err := db.Save(&user).Error; err != nil {
 		return nil, err
 	}
 

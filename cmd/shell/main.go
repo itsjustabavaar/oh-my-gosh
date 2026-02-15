@@ -3,23 +3,30 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/itsjustabavaar/oh-my-gosh/cmd/colors"
-	"github.com/itsjustabavaar/oh-my-gosh/cmd/handler"
-	"github.com/itsjustabavaar/oh-my-gosh/internal/basiccommands"
-	"github.com/itsjustabavaar/oh-my-gosh/internal/database"
-	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
-	"github.com/itsjustabavaar/oh-my-gosh/utils"
-	"github.com/itsjustabavaar/oh-my-gosh/vars"
 	"os"
 	"strings"
+
+	"github.com/itsjustabavaar/oh-my-gosh/internal/colors"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/commands/basic/history"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/handler"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/models"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/util"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/util/dbutil"
+	"github.com/itsjustabavaar/oh-my-gosh/internal/vars"
 )
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
-	utils.HandleInterrupt()
+	util.HandleInterrupt()
 
-	err := models.MigrateDB(database.GetDB())
+	db, err := dbutil.GormDB()
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
+		os.Exit(1)
+	}
+
+	err = models.MigrateDB(db)
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
 		os.Exit(1)
@@ -38,14 +45,14 @@ func main() {
 			continue
 		}
 
-		err = basiccommands.StoreCommandHistory(input)
+		err = history.StoreCommandHistory(input)
 		if err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
 			os.Exit(1)
 		}
 
 		if strings.HasPrefix(input, "clear") || strings.HasPrefix(input, "cls") {
-			err := utils.ClearScreen()
+			err := util.ClearScreen()
 			if err != nil {
 				_, _ = fmt.Fprintln(os.Stderr, "-gosh: ", err)
 				os.Exit(1)
@@ -58,6 +65,6 @@ func main() {
 }
 
 func printPrompt() {
-	workingDirectory := utils.GetCurrentDirectory()
+	workingDirectory := util.GetCurrentDirectory()
 	fmt.Printf("%s:%s:%s ", colors.WorkingDirectoryColor(workingDirectory), colors.UserColor(vars.CurrentUser.Username), vars.Prompt)
 }
