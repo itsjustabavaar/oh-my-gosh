@@ -13,6 +13,25 @@ A sleek, customizable theme for the [GoSH](https://github.com/gosh-terminal/gosh
 - 🚀 **Smart Autocompletion**: Context-aware suggestions for commands and arguments
 - 📊 **Informative Prompt**: Shows git status, command execution time, and more
 
+## Things To Do!!!
+
+- Add "viper" for shell configuration.
+- Add "golangci-lint" support.
+- Add install developement dependencies scripts.
+- Add some keyboard controls to shell in "Raw Terminal" mode. (x/term)
+- Add double "linked-list" data structure in "context" for supporting navigate history with arrow keys. (x/term)
+- Add left & right move controls in prompts. (x/term)
+- Add color configuration using "viper".
+- Add manual page using "cobra CLI" framework or something else.
+- Using "buffers", "bufio" and string builders for better performance.
+- Doing some refactors on "code architecture" for easier maintenance and easy to write tests.
+- Doing some enhancements on "database connection lifecycle".
+- Using "syscall" if needed
+- Using some features of low-level programming ("unsafe") for better performance and control.
+- Adding "encryption" and "security" aspects on shell sqlite database.
+- Database location must be in /var path (for linux) or somewhere in other operating systems.
+-
+
 ## Installation
 
 ### Prerequisites
@@ -44,7 +63,7 @@ import "github.com/itsjustabavaar/oh-my-gosh"
 func init() {
     // Choose your theme
     ohmygosh.SetTheme("monokai")
-    
+
     // Enable plugins
     ohmygosh.LoadPlugin("git")
     ohmygosh.LoadPlugin("golang")
